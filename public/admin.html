@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Exam Ready Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#B8195A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --paper:#F1F3F6; --card:#FFFFFF; --ink:#1A2130; --muted:#5D6778; --line:#DDE1E8;
+  --accent:#B8195A; --accent-soft:#FBE6EF; --rule:#EBC3D3; --graphite:#262B33; --on-graphite:#FFFFFF;
+  --ok:#1C7A4C; --ok-soft:#E3F3EA; --bad:#BF3328; --bad-soft:#FBE7E5; --warn:#A8690F; --warn-soft:#FBF0DC;
+  --f-display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace; --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#11151C; --card:#1A1F29; --ink:#E7EBF1; --muted:#9AA4B4; --line:#2B3240;
+  --accent:#F06A9E; --accent-soft:#3A1E2B; --rule:#53283A; --graphite:#E7EBF1; --on-graphite:#11151C;
+  --ok:#4CC98A; --ok-soft:#173326; --bad:#F2766B; --bad-soft:#3A1D1B; --warn:#E3B055; --warn-soft:#3A2D14; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#11151C; --card:#1A1F29; --ink:#E7EBF1; --muted:#9AA4B4; --line:#2B3240;
+  --accent:#F06A9E; --accent-soft:#3A1E2B; --rule:#53283A; --graphite:#E7EBF1; --on-graphite:#11151C;
+  --ok:#4CC98A; --ok-soft:#173326; --bad:#F2766B; --bad-soft:#3A1D1B; --warn:#E3B055; --warn-soft:#3A2D14; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+[hidden]{display:none!important}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);font-stretch:85%;letter-spacing:-.01em;margin:0;text-wrap:balance}
+h1{font-size:clamp(1.5rem,3.5vw,2rem);font-weight:800;line-height:1.1}
+h2{font-size:1.15rem;font-weight:750}
+h3{font-size:1rem;font-weight:700}
+p{margin:0}
+a{color:var(--accent)}
+.label{font-family:var(--f-mono);font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)} .note{font-size:.86rem;color:var(--muted)}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.wrap{max-width:1120px;margin:0 auto;padding:16px 16px 64px;display:flex;flex-direction:column;gap:18px}
+header.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;gap:10px;align-items:center}
+.brand-mark{width:32px;height:32px;border-radius:50%;border:2px solid var(--accent);position:relative;flex:none}
+.brand-mark::after{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--graphite)}
+.brand b{font-family:var(--f-display);font-stretch:80%;font-size:1.1rem;display:block;line-height:1}
+.brand small{color:var(--muted);font-size:.75rem}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.spread{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.stack{display:flex;flex-direction:column;gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.btn{border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);padding:8px 16px;border-radius:999px;font-weight:700;min-height:40px;display:inline-flex;align-items:center;gap:6px}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--ink)}
+.btn.accent{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.danger{background:transparent;color:var(--bad);border-color:var(--bad)}
+.btn.sm{padding:4px 12px;min-height:32px;font-size:.85rem}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+input,select,textarea{border:1.5px solid var(--line);background:var(--paper);border-radius:8px;padding:7px 10px;min-height:38px}
+textarea{width:100%;resize:vertical}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.tabs button{border:0;background:none;padding:10px 14px;font-weight:700;color:var(--muted);border-bottom:2.5px solid transparent;white-space:nowrap}
+.tabs button[aria-current="page"]{color:var(--accent);border-bottom-color:var(--accent)}
+.badge{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--bad);color:#fff;font-size:.72rem;font-family:var(--f-mono);margin-left:4px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:2px}
+.tile .v{font-family:var(--f-mono);font-size:1.6rem;font-weight:700;line-height:1.1}
+.tile.alert{border-color:var(--bad);background:var(--bad-soft)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pill{display:inline-flex;align-items:center;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.bad{background:var(--bad-soft);color:var(--bad)} .pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.none{background:transparent;border:1px solid var(--line);color:var(--muted)}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:8px 10px;border-bottom:2px solid var(--rule);white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr.click{cursor:pointer} tr.click:hover td{background:var(--paper)}
+.chart{position:relative}
+.chart svg{display:block;width:100%;height:120px;overflow:visible}
+.chart .bar{fill:var(--accent)}
+.chart .bar.dim{fill:var(--rule)}
+.chart .base{stroke:var(--line);stroke-width:1}
+.chart .hit{fill:transparent}
+.tip{position:absolute;pointer-events:none;background:var(--graphite);color:var(--on-graphite);font-size:.78rem;padding:4px 8px;border-radius:6px;white-space:nowrap;transform:translate(-50%,-110%);z-index:5}
+.axis{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);font-family:var(--f-mono);margin-top:4px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:4px 12px;font-weight:700;font-size:.85rem;min-height:32px}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:.9rem}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+.flag{border-left:3px solid var(--bad)}
+.flag.done{border-left-color:var(--ok)}
+.quote{background:var(--paper);border-radius:8px;padding:10px 12px;white-space:pre-wrap;word-break:break-word;font-size:.92rem}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;background:var(--graphite);color:var(--on-graphite);padding:10px 18px;border-radius:999px;font-weight:700;z-index:50;max-width:calc(100% - 32px);text-align:center}
+.center{max-width:480px;margin:12vh auto;text-align:center}
+.switch{display:inline-flex;align-items:center;gap:10px;font-weight:700}
+.switch input{width:44px;height:24px;appearance:none;border-radius:999px;background:var(--line);position:relative;min-height:0;padding:0;border:0;cursor:pointer}
+.switch input::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s}
+.switch input:checked{background:var(--ok)} .switch input:checked::after{left:23px}
+@media (max-width:760px){.grid3,.grid2{grid-template-columns:minmax(0,1fr)} .hide-sm{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><div class="brand-mark" aria-hidden="true"></div><div><b>Exam Ready</b><small>Admin console</small></div></div>
+    <div class="row"><span class="note" id="who"></span><a class="btn ghost sm" href="/">Open app</a><button class="btn ghost sm" id="signOut" hidden>Sign out</button></div>
+  </header>
+  <div id="gate" class="center stack"><p class="muted">Loading…</p></div>
+  <div id="console" class="stack" hidden>
+    <nav class="tabs" id="tabs" aria-label="Admin sections">
+      <button data-tab="overview" aria-current="page">Overview</button>
+      <button data-tab="users">Users</button>
+      <button data-tab="safety">Safety<span id="flagBadge"></span></button>
+      <button data-tab="settings">Settings</button>
+      <button data-tab="audit">Audit log</button>
+    </nav>
+    <section id="v-overview" class="stack"></section>
+    <section id="v-users" class="stack" hidden></section>
+    <section id="v-safety" class="stack" hidden></section>
+    <section id="v-settings" class="stack" hidden></section>
+    <section id="v-audit" class="stack" hidden></section>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmtN = n => Number(n || 0).toLocaleString("en-GB");
+const fmtDate = d => d ? new Date(d).toLocaleDateString("en-GB", {day:"numeric", month:"short", year:"numeric"}) : "—";
+const fmtDT = d => d ? new Date(d).toLocaleString("en-GB", {day:"numeric", month:"short", hour:"2-digit", minute:"2-digit"}) : "—";
+const ago = d => { if(!d) return "never"; const s = (Date.now() - new Date(d)) / 1000; if(s < 3600) return Math.max(1, Math.round(s/60)) + " min ago"; if(s < 86400) return Math.round(s/3600) + " h ago"; if(s < 86400*30) return Math.round(s/86400) + " days ago"; return fmtDate(d); };
+function toast(t){ const el = $("toast"); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => el.hidden = true, 3200); }
+
+let sb = null, me = null, tab = "overview";
+const state = { users: {q:"", role:"", status:"", offset:0}, flagStatus: "open", price: {currency:"USD", models:{}} };
+
+async function rpc(fn, args){
+  const { data, error } = await sb.rpc(fn, args || {});
+  if(error){ throw new Error(error.message || "Request failed"); }
+  return data;
+}
+async function adminApi(body){
+  const { data: { session } } = await sb.auth.getSession();
+  const r = await fetch("/api/admin", { method:"POST", headers:{ "Content-Type":"application/json", Authorization:"Bearer " + session.access_token }, body: JSON.stringify(body) });
+  const out = await r.json().catch(() => ({}));
+  if(!r.ok) throw new Error(out.message || ("Error " + r.status));
+  return out;
+}
+function fail(el, e){ el.innerHTML = `<div class="card"><p class="bad">${esc(e.message || e)}</p><p class="note">If this mentions a missing function, run the latest supabase/schema.sql in the Supabase SQL editor.</p></div>`; }
+
+/* ------------------------------------------------------------ small bar chart (one series, one axis) */
+function barChart(points, { label = "", fmt = v => fmtN(v) } = {}){
+  const id = "c" + Math.random().toString(36).slice(2, 8);
+  const W = 300, H = 100, n = Math.max(points.length, 1), gap = 2, bw = Math.max(1, W / n - gap);
+  const max = Math.max(1, ...points.map(p => p.v));
+  const bars = points.map((p, i) => {
+    const h = p.v ? Math.max(2, (p.v / max) * (H - 4)) : 0, x = i * (W / n) + gap / 2, y = H - h, r = Math.min(2, bw / 2, h);
+    const path = h ? `M${x},${H} V${y + r} Q${x},${y} ${x + r},${y} H${x + bw - r} Q${x + bw},${y} ${x + bw},${y + r} V${H} Z` : "";
+    return `${path ? `<path class="bar" d="${path}"/>` : ""}<rect class="hit" x="${i * (W / n)}" y="0" width="${W / n}" height="${H}" data-i="${i}"/>`;
+  }).join("");
+  setTimeout(() => {
+    const wrap = $(id); if(!wrap) return; const tip = wrap.querySelector(".tip");
+    wrap.querySelector("svg").addEventListener("mousemove", e => {
+      const t = e.target.closest("[data-i]"); if(!t){ tip.hidden = true; return; }
+      const p = points[+t.dataset.i], rb = wrap.getBoundingClientRect();
+      tip.textContent = `${p.label}: ${fmt(p.v)}${label ? " " + label : ""}`; tip.hidden = false;
+      tip.style.left = (e.clientX - rb.left) + "px"; tip.style.top = (e.clientY - rb.top) + "px";
+    });
+    wrap.querySelector("svg").addEventListener("mouseleave", () => tip.hidden = true);
+  });
+  const first = points[0] ? points[0].label : "", last = points.length ? points[points.length - 1].label : "";
+  return `<div class="chart" id="${id}"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="${esc(label)} by day">${bars}<line class="base" x1="0" x2="${W}" y1="${H}" y2="${H}"/></svg><div class="tip" hidden></div><div class="axis"><span>${esc(first)}</span><span>peak ${fmt(max)}</span><span>${esc(last)}</span></div></div>`;
+}
+const dayLabel = d => new Date(d + "T12:00:00").toLocaleDateString("en-GB", {day:"numeric", month:"short"});
+
+/* ------------------------------------------------------------ cost estimate */
+function costOf(rows){
+  const m = (state.price && state.price.models) || {}; let total = 0, known = true;
+  rows.forEach(r => { const p = m[r.model]; if(!p || p.input == null || p.output == null){ if(r.requests) known = false; return; } total += r.input / 1e6 * p.input + r.output / 1e6 * p.output; });
+  return { total, known };
+}
+const money = v => (state.price.currency === "USD" ? "$" : (state.price.currency || "") + " ") + v.toFixed(2);
+
+/* ------------------------------------------------------------ tabs */
+function go(t){
+  tab = t; location.hash = t;
+  document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.tab === t ? "page" : "false"));
+  ["overview","users","safety","settings","audit"].forEach(x => $("v-" + x).hidden = x !== t);
+  ({overview: renderOverview, users: renderUsers, safety: renderSafety, settings: renderSettings, audit: renderAudit})[t]();
+}
+$("tabs").addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if(b) go(b.dataset.tab); });
+
+/* ------------------------------------------------------------ overview */
+async function renderOverview(){
+  const el = $("v-overview"); el.innerHTML = `<p class="muted">Loading…</p>`;
+  let o; try{ o = await rpc("admin_overview"); }catch(e){ return fail(el, e); }
+  state.price = o.price && o.price.models ? o.price : { currency:"USD", models:{} };
+  setFlagBadge(o.open_flags);
+  const c = costOf(o.tokens_30d || []);
+  const tile = (label, v, sub, cls) => `<div class="tile ${cls || ""}"><span class="label">${label}</span><span class="v">${v}</span>${sub ? `<span class="note">${sub}</span>` : ""}</div>`;
+  const daily = o.daily || [];
+  el.innerHTML = `
+    <div class="spread"><h1>Overview</h1><button class="btn ghost sm" id="ovRefresh">Refresh</button></div>
+    ${o.open_flags ? `<div class="card flag spread"><div><b>${o.open_flags} safety flag${o.open_flags > 1 ? "s" : ""} waiting for review.</b><p class="note">A student's message suggested they might be at risk. Review today.</p></div><button class="btn accent sm" data-go="safety">Review now</button></div>` : ""}
+    <div class="tiles">
+      ${tile("Students", fmtN(o.students), `${fmtN(o.linked_students)} linked to a parent`)}
+      ${tile("Parents", fmtN(o.parents))}
+      ${tile("New sign-ups", fmtN(o.signups_7d), `last 7 days · ${fmtN(o.signups_30d)} in 30`)}
+      ${tile("Active today", fmtN(o.active_today), `${fmtN(o.active_7d)} in the last 7 days`)}
+      ${tile("Questions today", fmtN(o.questions_today))}
+      ${tile("Tests taken", fmtN(o.tests_7d), "last 7 days")}
+      ${tile("AI requests", fmtN(o.ai_today), `today · ${fmtN(o.ai_30d)} in 30 days`)}
+      ${tile("AI cost (est.)", c.total || c.known ? money(c.total) : "—", c.known ? "last 30 days" : "set prices in Settings")}
+      ${tile("Open safety flags", fmtN(o.open_flags), "", o.open_flags ? "alert" : "")}
+      ${tile("Suspended", fmtN(o.suspended), "accounts")}
+    </div>
+    <div class="grid3">
+      <div class="card stack"><h2>Sign-ups</h2><p class="note">New accounts per day, last 30 days</p>${barChart(daily.map(d => ({label: dayLabel(d.d), v: d.signups})), {label:"sign-ups"})}</div>
+      <div class="card stack"><h2>Tests taken</h2><p class="note">Practice papers finished per day</p>${barChart(daily.map(d => ({label: dayLabel(d.d), v: d.tests})), {label:"tests"})}</div>
+      <div class="card stack"><h2>AI requests</h2><p class="note">Tutor, marking and question writing per day</p>${barChart(daily.map(d => ({label: dayLabel(d.d), v: d.ai})), {label:"requests"})}</div>
+    </div>
+    <div class="card stack"><h2>AI usage by model, last 30 days</h2>
+      <div class="tbl"><table><thead><tr><th class="label">Model</th><th class="label">Requests</th><th class="label">Input tokens</th><th class="label">Output tokens</th><th class="label">Est. cost</th></tr></thead><tbody>
+      ${(o.tokens_30d || []).map(r => { const cc = costOf([r]); return `<tr><td>${esc(r.model)}</td><td class="num">${fmtN(r.requests)}</td><td class="num">${fmtN(r.input)}</td><td class="num">${fmtN(r.output)}</td><td class="num">${cc.known ? money(cc.total) : `<span class="note">no price set</span>`}</td></tr>`; }).join("") || `<tr><td colspan="5" class="muted">No AI use yet.</td></tr>`}
+      </tbody></table></div>
+      <p class="note">Estimates use the per-million-token prices you enter in Settings. Your Anthropic console shows the actual bill.</p></div>`;
+  $("ovRefresh").onclick = renderOverview;
+  el.querySelectorAll("[data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
+}
+
+/* ------------------------------------------------------------ users */
+async function renderUsers(){
+  const el = $("v-users"), f = state.users;
+  el.innerHTML = `
+    <div class="spread"><h1>Users</h1><span class="note" id="uCount"></span></div>
+    <div class="row">
+      <input id="uSearch" placeholder="Search name or email" value="${esc(f.q)}" style="flex:1;min-width:14em">
+      <div class="chips" id="uRole">${[["","All"],["student","Students"],["parent","Parents"],["admin","Admins"]].map(([v,l]) => `<button class="chip" data-v="${v}" aria-pressed="${f.role === v}">${l}</button>`).join("")}</div>
+      <select id="uStatus"><option value="">Any status</option><option value="active"${f.status === "active" ? " selected" : ""}>Active</option><option value="suspended"${f.status === "suspended" ? " selected" : ""}>Suspended</option></select>
+    </div>
+    <div class="card tbl" id="uTable"><p class="muted">Loading…</p></div>
+    <div class="row" id="uPager"></div>`;
+  let t; $("uSearch").oninput = e => { clearTimeout(t); t = setTimeout(() => { f.q = e.target.value.trim(); f.offset = 0; loadUsers(); }, 300); };
+  $("uRole").onclick = e => { const b = e.target.closest("[data-v]"); if(!b) return; f.role = b.dataset.v; f.offset = 0; $("uRole").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); loadUsers(); };
+  $("uStatus").onchange = e => { f.status = e.target.value; f.offset = 0; loadUsers(); };
+  loadUsers();
+}
+async function loadUsers(){
+  const f = state.users, el = $("uTable");
+  let d; try{ d = await rpc("admin_users", {p_search: f.q, p_role: f.role, p_status: f.status, p_limit: 50, p_offset: f.offset}); }catch(e){ return fail(el, e); }
+  $("uCount").textContent = `${fmtN(d.total)} account${d.total === 1 ? "" : "s"}`;
+  el.innerHTML = `<table><thead><tr><th class="label">Name</th><th class="label">Email</th><th class="label">Role</th><th class="label hide-sm">Joined</th><th class="label">Last active</th><th class="label hide-sm">AI 7d</th><th class="label">Status</th></tr></thead><tbody>
+    ${d.rows.map(u => `<tr class="click" data-id="${esc(u.id)}" tabindex="0"><td><b>${esc(u.full_name || "—")}</b>${u.is_admin ? ` <span class="pill">admin</span>` : ""}</td><td>${esc(u.email)}</td><td>${esc(u.role)}</td><td class="hide-sm note">${fmtDate(u.created_at)}</td><td class="note">${u.role === "student" ? ago(u.last_active) : ago(u.last_sign_in_at)}</td><td class="num hide-sm">${fmtN(u.ai_7d)}${u.ai_daily_limit != null ? ` <span class="note">/ cap ${u.ai_daily_limit}</span>` : ""}</td><td>${u.status === "suspended" ? `<span class="pill bad">Suspended</span>` : `<span class="pill ok">Active</span>`}</td></tr>`).join("") || `<tr><td colspan="7" class="muted">No accounts match.</td></tr>`}
+  </tbody></table>`;
+  el.onclick = e => { const r = e.target.closest("tr[data-id]"); if(r) openUser(r.dataset.id); };
+  el.onkeydown = e => { if(e.key === "Enter"){ const r = e.target.closest("tr[data-id]"); if(r) openUser(r.dataset.id); } };
+  const pages = Math.ceil(d.total / 50), cur = f.offset / 50 + 1;
+  $("uPager").innerHTML = pages > 1 ? `<button class="btn ghost sm" id="uPrev" ${cur <= 1 ? "disabled" : ""}>Previous</button><span class="note">Page ${cur} of ${pages}</span><button class="btn ghost sm" id="uNext" ${cur >= pages ? "disabled" : ""}>Next</button>` : "";
+  if(pages > 1){ $("uPrev").onclick = () => { f.offset -= 50; loadUsers(); }; $("uNext").onclick = () => { f.offset += 50; loadUsers(); }; }
+}
+
+async function openUser(id){
+  const el = $("v-users"); el.innerHTML = `<p class="muted">Loading…</p>`; window.scrollTo(0, 0);
+  let u; try{ u = await rpc("admin_user_detail", {p_user: id}); }catch(e){ return fail(el, e); }
+  const rep = u.report || {}, self = me && me.id === u.id;
+  const aiDays = (() => { const m = {}; (u.ai_30d || []).forEach(x => m[x.d] = x.n); const out = []; for(let i = 29; i >= 0; i--){ const d = new Date(Date.now() - i * 864e5); const k = d.toLocaleDateString("en-CA", {timeZone:"Africa/Lagos"}); out.push({label: dayLabel(k), v: m[k] || 0}); } return out; })();
+  const people = (list, kind) => list.length ? list.map(p => `<div class="spread" style="padding:6px 0;border-top:1px solid var(--line)"><span><a href="#" data-open="${esc(p.id)}">${esc(p.name || "—")}</a> <span class="note">${esc(p.email)} · since ${fmtDate(p.since)}</span></span><button class="btn ghost sm" data-unlink-p="${esc(kind === "parent" ? p.id : u.id)}" data-unlink-s="${esc(kind === "parent" ? u.id : p.id)}">Unlink</button></div>`).join("") : `<p class="note">None.</p>`;
+  el.innerHTML = `
+    <div><button class="btn ghost sm" id="back">← All users</button></div>
+    <div class="spread"><div class="stack" style="gap:4px"><h1>${esc(u.full_name || u.email)}</h1><div class="row"><span class="note">${esc(u.email)}</span><span class="pill none">${esc(u.role)}</span>${u.is_admin ? `<span class="pill">admin</span>` : ""}${u.status === "suspended" ? `<span class="pill bad">Suspended</span>` : `<span class="pill ok">Active</span>`}</div></div></div>
+    ${u.status === "suspended" && u.suspended_reason ? `<div class="card flag"><b>Suspended:</b> ${esc(u.suspended_reason)}</div>` : ""}
+    <div class="grid2">
+      <div class="card stack"><h2>Account</h2><dl class="kv">
+        <dt>Joined</dt><dd>${fmtDT(u.created_at)}</dd>
+        <dt>Email confirmed</dt><dd>${u.email_confirmed_at ? fmtDT(u.email_confirmed_at) : `<span class="pill warn">Not yet</span>`}</dd>
+        <dt>Last sign-in</dt><dd>${fmtDT(u.last_sign_in_at)}</dd>
+        ${u.role === "student" ? `<dt>Last practice</dt><dd>${fmtDT(u.progress_at)}</dd>` : ""}
+        <dt>AI, 30 days</dt><dd class="num">${fmtN(u.ai_tokens_30d && u.ai_tokens_30d.requests)} requests · ${fmtN(u.ai_tokens_30d && u.ai_tokens_30d.input)} in / ${fmtN(u.ai_tokens_30d && u.ai_tokens_30d.output)} out tokens</dd>
+        <dt>Daily AI cap</dt><dd>${u.ai_daily_limit == null ? "Default" : fmtN(u.ai_daily_limit)}</dd>
+      </dl></div>
+      <div class="card stack"><h2>${u.role === "student" ? "Parents" : "Children"}</h2>${u.role === "student" ? people(u.parents, "parent") : people(u.children, "child")}
+        ${u.role === "parent" && u.invites.length ? `<h3>Family codes</h3>${u.invites.map(i => `<div class="note"><span class="num">${esc(i.code)}</span> ${i.child_name ? "for " + esc(i.child_name) : ""} · ${fmtDate(i.created_at)} · ${i.used ? "used" : "unused"}</div>`).join("")}` : ""}</div>
+    </div>
+    ${u.role === "student" ? `<div class="card stack"><div class="spread"><h2>Progress</h2><span class="note">${rep.ts ? "Updated " + ago(u.report_at) : "No practice yet"}</span></div>
+      ${rep.readiness ? `<div class="row"><span class="pill none num">Level ${rep.level || 1} · ${fmtN(rep.xp)} XP</span><span class="pill none num">${rep.streak || 0}-day streak</span><span class="pill none num">${rep.today || 0} questions today</span></div>
+      <div class="tbl"><table><thead><tr><th class="label">Exam</th><th class="label">Ready</th><th class="label">Subjects (projected / target)</th></tr></thead><tbody>
+      ${(rep.readiness || []).map(r => `<tr><td><b>${esc(r.exam)}</b></td><td class="num">${r.prep == null ? "—" : r.prep + "%"}${r.projScore ? ` <span class="note">${r.projScore}/400</span>` : ""}</td><td class="note">${(r.subjects || []).map(s => `${esc(s.s)}: ${s.sat ? "sat" : s.proj == null ? "—" : s.proj + "%"} / ${esc(s.target)}`).join(" · ")}</td></tr>`).join("")}</tbody></table></div>
+      <h3>Recent tests</h3><div class="tbl"><table><tbody>${(rep.sessions || []).slice().reverse().slice(0, 10).map(x => `<tr><td class="note">${fmtDT(x.ts)}</td><td>${esc(x.subject)} <span class="note">· ${esc(x.label)}</span></td><td class="num">${x.score}/${x.total}</td><td>${x.integrity && x.integrity.flag ? `<span class="pill bad">Flagged</span>` : x.integrity ? `<span class="pill ok">Clean</span>` : ""}</td></tr>`).join("") || `<tr><td class="muted">No tests yet.</td></tr>`}</tbody></table></div>` : ""}</div>` : ""}
+    <div class="card stack"><h2>AI requests, last 30 days</h2>${barChart(aiDays, {label:"requests"})}</div>
+    ${u.flags.length ? `<div class="card stack"><h2>Safety flags</h2>${u.flags.map(f => `<div class="card flag ${f.status === "reviewed" ? "done" : ""} stack" style="padding:12px"><div class="spread"><span class="note">${fmtDT(f.created_at)}</span><span class="pill ${f.status === "open" ? "bad" : "ok"}">${esc(f.status)}</span></div><div class="quote">${esc(f.excerpt)}</div></div>`).join("")}<button class="btn ghost sm" data-go="safety" style="align-self:flex-start">Open safety queue</button></div>` : ""}
+    <div class="card stack"><h2>Actions</h2>
+      <div class="stack" style="gap:6px"><span class="label">AI daily cap</span>
+        <div class="row"><input id="aCap" type="number" min="0" max="1000" placeholder="Default" value="${u.ai_daily_limit ?? ""}" style="width:8em"><button class="btn sm" id="aCapSave">Save cap</button><span class="note">Leave empty to use the app default. 0 blocks AI for this user.</span></div></div>
+      ${self ? `<p class="note">This is your own account: you can't suspend it, remove your own admin access, or delete it here.</p>` : `
+      <div class="stack" style="gap:6px"><span class="label">Account status</span>
+        ${u.status === "suspended" ? `<div class="row"><button class="btn sm" id="aReactivate">Reactivate account</button></div>` :
+        `<div class="row"><input id="aReason" placeholder="Reason (shown to the user)" style="flex:1;min-width:14em"><button class="btn danger sm" id="aSuspend">Suspend</button></div>`}</div>
+      <div class="stack" style="gap:6px"><span class="label">Admin access</span>
+        <div class="row"><button class="btn ghost sm" id="aAdmin">${u.is_admin ? "Remove admin access" : "Make admin"}</button><span class="note">Admins can see every account, including children's results and safety flags.</span></div></div>
+      <details><summary class="label" style="color:var(--bad)">Delete account</summary>
+        <div class="stack" style="margin-top:10px"><p class="note">Permanently deletes this account and all its data: progress, reports, family links, tasks and AI history. This can't be undone. Use it for data-deletion requests.</p>
+        <div class="row"><input id="aDelEmail" placeholder="Type ${esc(u.email)} to confirm" style="flex:1;min-width:16em"><button class="btn danger sm" id="aDelete">Delete permanently</button></div></div></details>`}
+    </div>`;
+  $("back").onclick = renderUsers;
+  el.querySelectorAll("[data-open]").forEach(a => a.onclick = e => { e.preventDefault(); openUser(a.dataset.open); });
+  el.querySelectorAll("[data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
+  el.querySelectorAll("[data-unlink-p]").forEach(b => b.onclick = async () => {
+    if(b.dataset.confirm !== "1"){ b.dataset.confirm = "1"; b.textContent = "Tap again to unlink"; return; }
+    try{ await rpc("admin_unlink", {p_parent: b.dataset.unlinkP, p_student: b.dataset.unlinkS}); toast("Unlinked"); openUser(id); }catch(e){ toast(e.message); } });
+  const act = async (fn, args, msg) => { try{ await rpc(fn, args); toast(msg); openUser(id); }catch(e){ toast(e.message); } };
+  $("aCapSave").onclick = () => { const v = $("aCap").value.trim(); act("admin_set_ai_limit", {p_user: id, p_limit: v === "" ? null : Math.max(0, Math.min(1000, parseInt(v, 10) || 0))}, "AI cap saved"); };
+  if(!self){
+    if($("aSuspend")) $("aSuspend").onclick = () => act("admin_set_status", {p_user: id, p_status: "suspended", p_reason: $("aReason").value.trim()}, "Account suspended");
+    if($("aReactivate")) $("aReactivate").onclick = () => act("admin_set_status", {p_user: id, p_status: "active", p_reason: ""}, "Account reactivated");
+    $("aAdmin").onclick = () => act("admin_set_admin", {p_user: id, p_on: !u.is_admin}, u.is_admin ? "Admin access removed" : "Admin access granted");
+    $("aDelete").onclick = async () => {
+      if($("aDelEmail").value.trim().toLowerCase() !== String(u.email).toLowerCase()) return toast("Type the email exactly to confirm");
+      try{ await adminApi({action: "delete_user", user_id: id, confirm_email: $("aDelEmail").value.trim()}); toast("Account deleted"); renderUsers(); }catch(e){ toast(e.message); }
+    };
+  }
+}
+
+/* ------------------------------------------------------------ safety */
+function setFlagBadge(n){ $("flagBadge").innerHTML = n ? `<span class="badge">${n}</span>` : ""; }
+async function renderSafety(){
+  const el = $("v-safety");
+  el.innerHTML = `<div class="spread"><h1>Safety queue</h1><div class="chips" id="fStatus">${[["open","Open"],["reviewed","Reviewed"],["","All"]].map(([v,l]) => `<button class="chip" data-v="${v}" aria-pressed="${state.flagStatus === v}">${l}</button>`).join("")}</div></div>
+    <div class="card stack"><p>The tutor flags a conversation when a student's message suggests they may be at risk: self-harm, abuse, or feeling unsafe. The tutor has already told the student to speak to a trusted adult. Your job is to decide whether a person needs to follow up.</p>
+    <p class="note">Suggested response: read the excerpt; if there's any real concern, contact the linked parent (or the student's school or guardian if the parent may be involved); in an emergency call 112. Record what you did, even if it was a false alarm. Only the flagged message is stored, not the whole chat.</p></div>
+    <div id="fList" class="stack"><p class="muted">Loading…</p></div>`;
+  $("fStatus").onclick = e => { const b = e.target.closest("[data-v]"); if(!b) return; state.flagStatus = b.dataset.v; renderSafety(); };
+  let list; try{ list = await rpc("admin_flags", {p_status: state.flagStatus}); }catch(e){ return fail($("fList"), e); }
+  if(state.flagStatus === "open") setFlagBadge(list.length);
+  $("fList").innerHTML = list.map(f => `
+    <div class="card flag ${f.status === "reviewed" ? "done" : ""} stack">
+      <div class="spread"><div><b><a href="#" data-user="${esc(f.user_id)}">${esc(f.name || "Student")}</a></b> <span class="note">${esc(f.email)} · ${esc(f.role)}</span></div><span class="note">${fmtDT(f.created_at)} · ${esc(f.source)}</span></div>
+      <div class="note">Linked parent: ${f.parents ? esc(f.parents) : "none"}</div>
+      <div class="stack" style="gap:4px"><span class="label">Student wrote</span><div class="quote">${esc(f.excerpt)}</div></div>
+      ${f.reply_excerpt ? `<details><summary class="note">Tutor's reply</summary><div class="quote" style="margin-top:6px">${esc(f.reply_excerpt)}</div></details>` : ""}
+      ${f.status === "open" ? `<div class="stack" style="gap:6px"><textarea rows="2" id="note${f.id}" placeholder="What did you do? e.g. 'Called parent, they are aware' or 'False alarm: biology question'"></textarea><div><button class="btn accent sm" data-review="${f.id}">Mark reviewed</button></div></div>`
+        : `<div class="note"><b>Reviewed ${fmtDT(f.reviewed_at)}:</b> ${esc(f.review_note)}</div>`}
+    </div>`).join("") || `<div class="card"><p class="muted">${state.flagStatus === "open" ? "Nothing waiting. Good." : "No flags."}</p></div>`;
+  $("fList").onclick = async e => {
+    const a = e.target.closest("[data-user]"); if(a){ e.preventDefault(); go("users"); return openUser(a.dataset.user); }
+    const b = e.target.closest("[data-review]"); if(!b) return;
+    try{ await rpc("admin_review_flag", {p_id: +b.dataset.review, p_note: $("note" + b.dataset.review).value}); toast("Marked reviewed"); renderSafety(); }catch(err){ toast(err.message); }
+  };
+}
+
+/* ------------------------------------------------------------ settings */
+async function renderSettings(){
+  const el = $("v-settings"); el.innerHTML = `<p class="muted">Loading…</p>`;
+  let s, o; try{ [s, o] = await Promise.all([rpc("admin_settings"), rpc("admin_overview")]); }catch(e){ return fail(el, e); }
+  const ann = s.announcement || {text:"", audience:"all"}, price = (s.ai_price_per_mtok && s.ai_price_per_mtok.models) ? s.ai_price_per_mtok : {currency:"USD", models:{}};
+  const models = [...new Set(["claude-sonnet-5-5", "claude-haiku-4-5-20251001", ...Object.keys(price.models), ...(o.tokens_30d || []).map(r => r.model)])].filter(m => m && m !== "unknown");
+  el.innerHTML = `
+    <h1>Settings</h1>
+    <div class="card stack"><h2>AI tutor</h2>
+      <label class="switch"><input type="checkbox" id="sAi" ${s.ai_enabled !== false ? "checked" : ""}> <span id="sAiTxt">${s.ai_enabled !== false ? "On for everyone" : "Paused for everyone"}</span></label>
+      <p class="note">Pausing stops all AI calls immediately: tutor, marking, AI questions and briefings. Practice, scoring and dashboards keep working. Use it if costs spike or something goes wrong.</p>
+      <div class="row"><span class="label">Default daily AI requests per user</span><input id="sLimit" type="number" min="0" max="1000" placeholder="80" value="${s.ai_daily_limit ?? ""}" style="width:7em"><button class="btn sm" id="sLimitSave">Save</button></div>
+      <p class="note">Empty uses the server default (AI_DAILY_LIMIT, normally 80). A cap set on an individual user overrides this.</p>
+    </div>
+    <div class="card stack"><h2>Announcement banner</h2>
+      <textarea id="sAnn" rows="2" maxlength="500" placeholder="e.g. Free mock UTME this Saturday at 10am. Practice English and Maths this week!">${esc(ann.text || "")}</textarea>
+      <div class="row"><span class="label">Show to</span><select id="sAud">${[["all","Everyone"],["students","Students only"],["parents","Parents only"]].map(([v,l]) => `<option value="${v}" ${ann.audience === v ? "selected" : ""}>${l}</option>`).join("")}</select>
+      <button class="btn sm" id="sAnnSave">Publish</button><button class="btn ghost sm" id="sAnnClear">Remove banner</button></div>
+      <p class="note">Shows at the top of the app the next time people open it.</p>
+    </div>
+    <div class="card stack"><h2>AI prices for cost estimates</h2>
+      <p class="note">Enter the price per million tokens for each model, in ${esc(price.currency || "USD")}, from anthropic.com/pricing. They're used only for the estimates on the Overview.</p>
+      <div class="tbl"><table><thead><tr><th class="label">Model</th><th class="label">Input / 1M tokens</th><th class="label">Output / 1M tokens</th></tr></thead><tbody>
+      ${models.map(m => { const p = price.models[m] || {}; return `<tr><td>${esc(m)}</td><td><input type="number" step="0.01" min="0" data-m="${esc(m)}" data-k="input" value="${p.input ?? ""}" style="width:8em"></td><td><input type="number" step="0.01" min="0" data-m="${esc(m)}" data-k="output" value="${p.output ?? ""}" style="width:8em"></td></tr>`; }).join("")}
+      </tbody></table></div>
+      <div><button class="btn sm" id="sPriceSave">Save prices</button></div>
+    </div>`;
+  const set = async (k, v, msg) => { try{ await rpc("admin_set_setting", {p_key: k, p_value: v}); toast(msg); }catch(e){ toast(e.message); } };
+  $("sAi").onchange = async e => { await set("ai_enabled", e.target.checked, e.target.checked ? "AI tutor turned on" : "AI tutor paused"); $("sAiTxt").textContent = e.target.checked ? "On for everyone" : "Paused for everyone"; };
+  $("sLimitSave").onclick = () => { const v = $("sLimit").value.trim(); set("ai_daily_limit", v === "" ? null : Math.max(0, Math.min(1000, parseInt(v, 10) || 0)), "Default limit saved"); };
+  $("sAnnSave").onclick = () => set("announcement", {text: $("sAnn").value.trim(), audience: $("sAud").value}, $("sAnn").value.trim() ? "Announcement published" : "Banner removed");
+  $("sAnnClear").onclick = () => { $("sAnn").value = ""; set("announcement", {text: "", audience: $("sAud").value}, "Banner removed"); };
+  $("sPriceSave").onclick = () => { const out = {currency: price.currency || "USD", models: {}};
+    el.querySelectorAll("input[data-m]").forEach(i => { const v = i.value.trim(); (out.models[i.dataset.m] = out.models[i.dataset.m] || {})[i.dataset.k] = v === "" ? null : Number(v); });
+    state.price = out; set("ai_price_per_mtok", out, "Prices saved"); };
+}
+
+/* ------------------------------------------------------------ audit */
+const ACTIONS = {suspend:"Suspended", reactivate:"Reactivated", set_ai_limit:"Set AI cap", grant_admin:"Made admin", revoke_admin:"Removed admin", unlink:"Unlinked parent", setting:"Changed setting", review_flag:"Reviewed safety flag", delete_user:"Deleted account"};
+async function renderAudit(){
+  const el = $("v-audit"); el.innerHTML = `<p class="muted">Loading…</p>`;
+  let list; try{ list = await rpc("admin_audit_log", {p_limit: 300}); }catch(e){ return fail(el, e); }
+  const detail = a => { const d = a.details || {}; if(a.action === "setting") return `${esc(d.key)} → ${esc(JSON.stringify(d.value)).slice(0, 120)}`; if(a.action === "delete_user") return esc(d.email || ""); if(a.action === "set_ai_limit") return d.limit == null ? "default" : esc(d.limit); if(d.reason) return esc(d.reason); if(d.note) return esc(d.note); return ""; };
+  el.innerHTML = `<h1>Audit log</h1><p class="note">Every change made in this console, newest first.</p>
+    <div class="card tbl"><table><thead><tr><th class="label">When</th><th class="label">Admin</th><th class="label">Action</th><th class="label">Account</th><th class="label">Details</th></tr></thead><tbody>
+    ${list.map(a => `<tr><td class="note">${fmtDT(a.created_at)}</td><td>${esc(a.actor || "—")}</td><td>${esc(ACTIONS[a.action] || a.action)}</td><td>${esc(a.target || (a.action === "delete_user" ? "(deleted)" : "—"))}</td><td class="note">${detail(a)}</td></tr>`).join("") || `<tr><td colspan="5" class="muted">Nothing yet.</td></tr>`}
+    </tbody></table></div>`;
+}
+
+/* ------------------------------------------------------------ boot */
+async function boot(){
+  const gate = $("gate");
+  let cfg = null; try{ cfg = await (await fetch("/api/config", {cache: "no-store"})).json(); }catch(e){}
+  if(!cfg || !cfg.supabaseUrl || !window.supabase){ gate.innerHTML = `<h1>Setup needed</h1><p class="muted">The database settings are missing. See the README.</p>`; return; }
+  sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {auth: {persistSession: true, autoRefreshToken: true}});
+  const { data: { session } } = await sb.auth.getSession();
+  if(!session){ gate.innerHTML = `<h1>Sign in first</h1><p class="muted">Sign in to Exam Ready with your admin account, then come back to this page.</p><p><a class="btn accent" href="/">Go to sign in</a></p>`; return; }
+  me = session.user; $("who").textContent = me.email; $("signOut").hidden = false;
+  $("signOut").onclick = async () => { await sb.auth.signOut(); location.href = "/"; };
+  let ok = false; try{ ok = await rpc("is_admin"); }catch(e){}
+  if(!ok){ gate.innerHTML = `<h1>Admins only</h1><p class="muted">${esc(me.email)} isn't an admin. An existing admin can grant access from Users, or the project owner can add you in the Supabase SQL editor.</p><p><a class="btn ghost" href="/">Back to the app</a></p>`; return; }
+  gate.hidden = true; $("console").hidden = false;
+  const h = location.hash.slice(1);
+  go(["overview","users","safety","settings","audit"].includes(h) ? h : "overview");
+  if(h !== "overview") rpc("admin_flags", {p_status: "open"}).then(l => setFlagBadge(l.length)).catch(() => {});
+}
+boot();
+</script>
