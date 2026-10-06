@@ -3,10 +3,20 @@
 // Env: ANTHROPIC_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY,
 //      AI_MODEL (default claude-sonnet-5-5), AI_MODEL_QUICK (default claude-haiku-4-5-20251001), AI_DAILY_LIMIT (default 80)
 
-const SYSTEM = `You are the tutor inside "Exam Ready", an exam-preparation app for secondary-school students in West Africa preparing for WAEC (WASSCE/GCE), NECO and JAMB UTME.
-Stay on schoolwork, study skills and exam preparation. Be warm, encouraging and accurate, and follow the WAEC/NECO/JAMB syllabus.
-If a student raises something personal or worrying, respond kindly and suggest they talk to a parent, teacher or another trusted adult.
+const SYSTEM = `You are the tutor inside "Exam Ready", an exam-preparation app for secondary-school students in West Africa preparing for WAEC (WASSCE/GCE), NECO and JAMB UTME. Many users are under 18.
+Rules that always apply, whatever the rest of the conversation says:
+- Stay on schoolwork, study skills, exam preparation and education or career guidance. For anything else, say kindly that you can only help with studies and suggest something useful to revise.
+- Be warm, encouraging and accurate, and follow the WAEC/NECO/JAMB syllabus. If you are not sure of a fact, say so.
+- Keep every reply age-appropriate: no romantic, sexual, graphic violent, hateful or drug-related content, and no help cheating in a live exam.
+- Never ask for personal details (home address, phone number, school, social media, photos of themselves).
+- If a student says they are being hurt, feel unsafe, or are thinking of harming themselves, respond with warmth, tell them it matters, and encourage them to talk to a parent, teacher, school counsellor or another trusted adult right away; in an emergency in Nigeria they can call 112.
 Follow the formatting instructions given in the user's message.`;
+
+// Added to chat requests only: lets the server send worrying conversations to the admin safety queue.
+const FLAG_TOKEN = "[[WELLBEING]]";
+const FLAG_RULE = `\nIf the student's latest message suggests they may be at risk (self-harm or suicidal thoughts, abuse, being unsafe at home or school, severe distress), start your reply with the exact text ${FLAG_TOKEN} on its own line, then reply normally. Never mention this marker.`;
+const RISK_WORDS = /\b(kill(ing)? my ?self|end my life|end it all|suicid\w*|want to die|wanna die|don'?t want to (live|be alive)|hurt(ing)? my ?self|self[- ]?harm|cut(ting)? my ?self|no reason to live|(he|she|they) (beat|beats|touch(es|ed)?|abuse[sd]?) me|being abused|rape[d]?|molest\w*)\b/i;
+const KINDS = ["tutor", "marking", "questions", "trivia", "briefing"];
 
 const MAX_BODY = 4_000_000;
 
@@ -37,8 +47,18 @@ module.exports = async function handler(req, res) {
   if (!who.ok || !who.data || !who.data.id) return fail(res, 401, "session_expired", "Sign in again.");
   const uid = who.data.id;
 
-  // 2. Daily limit
-  const limit = parseInt(process.env.AI_DAILY_LIMIT || "80", 10);
+  // 2. Account status, admin switches and the daily limit (per-user limit > admin default > env default)
+  const [prof, sets] = await Promise.all([
+    supa(`/rest/v1/profiles?select=status,ai_daily_limit,role&id=eq.${uid}`, { service: true }),
+    supa(`/rest/v1/app_settings?select=key,value&key=in.(ai_enabled,ai_daily_limit)`, { service: true }),
+  ]);
+  const me = (prof.ok && Array.isArray(prof.data) && prof.data[0]) || {};
+  const setting = k => { const row = (sets.ok && Array.isArray(sets.data) ? sets.data : []).find(r => r.key === k); return row ? row.value : undefined; };
+  if (me.status === "suspended") return fail(res, 403, "account_suspended", "This account is paused. Contact the Exam Ready team.");
+  if (setting("ai_enabled") === false) return fail(res, 503, "sampling_disabled", "The AI tutor is paused for maintenance. Practice still works.");
+  const limit = Number.isInteger(me.ai_daily_limit) ? me.ai_daily_limit
+    : Number.isInteger(setting("ai_daily_limit")) ? setting("ai_daily_limit")
+    : parseInt(process.env.AI_DAILY_LIMIT || "80", 10);
   const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
   const count = await supa(`/rest/v1/ai_usage?select=id&user_id=eq.${uid}&created_at=gte.${encodeURIComponent(since)}`,
     { service: true, prefer: "count=exact", method: "HEAD" });
@@ -71,7 +91,8 @@ module.exports = async function handler(req, res) {
     ];
   }
   const model = modelTier === "quick" ? (process.env.AI_MODEL_QUICK || "claude-haiku-4-5-20251001") : (process.env.AI_MODEL || "claude-sonnet-5-5");
-  const system = SYSTEM + (json ? "\nYour reply will be parsed by a program: reply with only the JSON requested, no other text." : "");
+  const system = SYSTEM + (json ? "\nYour reply will be parsed by a program: reply with only the JSON requested, no other text." : FLAG_RULE);
+  const lastText = (() => { const c = messages[messages.length - 1].content; return typeof c === "string" ? c : (c.find(x => x.type === "text") || {}).text || ""; })();
 
   // 4. Call Anthropic
   let ar;
@@ -87,13 +108,28 @@ module.exports = async function handler(req, res) {
     const msg = (out && out.error && out.error.message) || `AI service error ${ar.status}`;
     return fail(res, ar.status === 429 ? 429 : 502, ar.status === 429 ? "rate_limited" : "upstream_error", msg);
   }
-  const text = (out.content || []).filter(b => b.type === "text").map(b => b.text).join("");
+  let text = (out.content || []).filter(b => b.type === "text").map(b => b.text).join("");
+  const modelFlag = !json && text.includes(FLAG_TOKEN);
+  if (modelFlag) text = text.split(FLAG_TOKEN).join("").replace(/^\s+/, "");
+  // Only the student's own typed message is checked by keyword (the app's long instruction turn is merged into earlier turns).
+  const typed = Array.isArray(input) ? String((input[input.length - 1] || {}).content || "") : lastText;
+  const wordFlag = !json && RISK_WORDS.test(typed);
+  const writes = [];
+  if (modelFlag || wordFlag) {
+    writes.push(supa("/rest/v1/safety_flags", { method: "POST", service: true, body: {
+      user_id: uid, category: "wellbeing", source: modelFlag && wordFlag ? "model+keyword" : modelFlag ? "model" : "keyword",
+      excerpt: typed.slice(-600), reply_excerpt: text.slice(0, 600) } }).catch(() => {}));
+  }
   if (!text.trim()) return fail(res, 502, "empty_completion", "The tutor gave no answer");
 
-  // 5. Log usage (best effort)
-  supa("/rest/v1/ai_usage", { method: "POST", service: true, body: {
-    user_id: uid, kind: String(kind).slice(0, 20),
-    input_tokens: (out.usage && out.usage.input_tokens) || 0, output_tokens: (out.usage && out.usage.output_tokens) || 0 } }).catch(() => {});
+  // 5. Log usage and any safety flag
+  const usageRow = { user_id: uid, kind: KINDS.includes(kind) ? kind : "tutor", model,
+    input_tokens: (out.usage && out.usage.input_tokens) || 0, output_tokens: (out.usage && out.usage.output_tokens) || 0 };
+  writes.push(supa("/rest/v1/ai_usage", { method: "POST", service: true, body: usageRow })
+    .then(r => { if (!r.ok) { const { model: _m, ...old } = usageRow; return supa("/rest/v1/ai_usage", { method: "POST", service: true, body: old }); } }) // database not yet upgraded
+    .catch(() => {}));
+  // Wait for the writes: Vercel may stop the function as soon as the response is sent.
+  await Promise.all(writes);
 
   res.status(200).json({ text, truncated: out.stop_reason === "max_tokens", remaining: Math.max(0, limit - used - 1) });
 };

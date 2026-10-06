@@ -238,6 +238,40 @@ td .track{width:100%;min-width:80px}
 .inv{padding:8px 0;border-top:1px solid var(--line);gap:10px}
 .ok-text{color:var(--ok)} .bad-text{color:var(--bad)}
 #authCard a,#parentApp a{color:var(--accent)}
+
+/* parent dashboard v2, announcements, tasks */
+.ptiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.ptile{border:1px solid var(--line);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:2px;background:var(--card)}
+.ptile b{font-size:1.5rem;line-height:1.1}
+.ptile.bad{border-color:var(--bad);background:var(--bad-soft)}
+svg.trend{display:block;width:100%;height:110px;overflow:visible}
+svg.trend .tb.hi{fill:var(--ok)} svg.trend .tb.mid{fill:var(--warn)} svg.trend .tb.lo{fill:var(--bad)}
+svg.trend .tb.flag{fill:var(--muted)}
+svg.trend .tg{stroke:var(--line);stroke-width:1;stroke-dasharray:3 3;vector-effect:non-scaling-stroke}
+svg.trend .tg.base{stroke-dasharray:none}
+svg.trend .tl{font-size:7px;fill:var(--muted);font-family:var(--f-mono)}
+i.key{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+i.key.hi{background:var(--ok)} i.key.mid{background:var(--warn)} i.key.lo{background:var(--bad)} i.key.flag{background:var(--muted)}
+.agrid{display:grid;grid-template-rows:repeat(7,1fr);grid-auto-flow:column;grid-auto-columns:1fr;gap:3px;max-width:340px}
+i.ac{display:block;aspect-ratio:1;border-radius:3px;background:var(--paper);border:1px solid var(--line);width:auto;min-width:10px}
+i.ac.pad{visibility:hidden}
+i.ac.l1{background:var(--rule);border-color:var(--rule)} i.ac.l2{background:color-mix(in srgb,var(--accent) 60%,var(--rule));border-color:transparent} i.ac.l3{background:var(--accent);border-color:var(--accent)}
+.row i.ac{width:12px;height:12px;min-width:12px}
+.trow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(60px,1fr) auto;gap:10px;align-items:center;padding:4px 0}
+.fill.ok{background:var(--ok)} .fill.warn{background:var(--warn)} .fill.bad{background:var(--bad)}
+.mlist{display:flex;flex-direction:column}
+.mrow{padding:10px 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:2px}
+.tasks{display:flex;flex-direction:column;gap:6px}
+.ptask{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+label.ptask{grid-template-columns:28px minmax(0,1fr);cursor:pointer}
+.ptask input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent)}
+.ptask.done{opacity:.6} .ptask.done b{text-decoration:line-through}
+.ptask .ptick{font-size:1.1rem;text-align:center;color:var(--accent)}
+.pnote{border:1.5px solid var(--accent);background:var(--accent-soft);border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.announce{border:1.5px solid var(--warn);background:var(--warn-soft);border-radius:var(--r);padding:12px 14px}
+.announce p{margin:2px 0 0;color:var(--ink)}
+.briefTxt{white-space:pre-wrap;line-height:1.6}
+#pAddCard.compact h2{font-size:1rem}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -250,15 +284,16 @@ td .track{width:100%;min-width:80px}
     <div class="brand"><div class="brand-mark" aria-hidden="true"></div><div><b>Exam Ready</b><small>Parent dashboard</small></div></div>
     <div class="row"><span class="note" id="pAccount"></span><button class="btn ghost sm" id="pRefresh">Refresh</button><button class="btn ghost sm" id="pSignOut">Sign out</button></div>
   </header>
+  <div id="pBanner" class="stack" hidden></div>
   <h1 id="pHello">Welcome.</h1>
-  <div class="card stack">
+  <div id="pKids" class="stack"></div>
+  <div class="card stack" id="pAddCard">
     <h2>Add a child</h2>
     <p class="muted">Create a family code, then your child signs up as a student and enters it. Their scores, readiness and test-integrity log appear below.</p>
     <div class="row"><input id="pChildName" placeholder="Child's first name (optional)" autocomplete="off" style="flex:1;min-width:12em"><button class="btn accent" id="pAdd">Create family code</button></div>
     <div id="pNewCode" class="stack" hidden></div>
     <div id="pInvites" class="stack"></div>
   </div>
-  <div id="pKids" class="stack"></div>
 </div></div>
 
 <div id="appShell" hidden>
@@ -284,6 +319,8 @@ td .track{width:100%;min-width:80px}
         <span class="label" id="todayDate"></span>
         <h1 id="hello">Good evening. Let's get you exam ready.</h1>
       </div>
+      <div id="homeBanner" class="stack" hidden></div>
+      <div class="card stack" id="parentTasks" hidden></div>
 
       <div class="card gamebar" id="gamebar"></div>
 
@@ -2463,7 +2500,9 @@ const AI_ERR = {
   session_expired:"Your session has expired. Sign in again to use the tutor.",
   refused:"The tutor couldn't answer that. Try rephrasing the question.",
   invalid_json:"The tutor's questions came back garbled. Try again.",
-  prompt_too_large:"That conversation is too long. Start a new chat."
+  prompt_too_large:"That conversation is too long. Start a new chat.",
+  sampling_disabled:"The AI tutor is paused for maintenance. Practice still works.",
+  account_suspended:"This account is paused. The AI tutor isn't available."
 };
 const aiErr = e => AI_ERR[e && e.code] || "The tutor couldn't connect. Check your connection and try again.";
 let aiLastCode = "";
@@ -2990,7 +3029,7 @@ function makeSample(){
     let r;
     try{
       r = await fetch("/api/ai", {method:"POST", signal:opts.signal, headers:{"Content-Type":"application/json", Authorization:"Bearer "+token},
-        body: JSON.stringify({input, modelTier:opts.modelTier||"default", images, json:asJson, kind: asJson?"marking":"tutor"})});
+        body: JSON.stringify({input, modelTier:opts.modelTier||"default", images, json:asJson, kind: opts.kind || (asJson?"marking":"tutor")})});
     }catch(e){ if(opts.signal && opts.signal.aborted) throw {code:"cancelled"}; throw {code:"upstream_error", message:"Network error"}; }
     const out = await r.json().catch(()=>({}));
     if(!r.ok) throw {code: out.code || (r.status===401?"session_expired":r.status===429?"rate_limited":"upstream_error"), message: out.message||("Error "+r.status)};
@@ -3108,6 +3147,7 @@ async function enterStudent(){
   sampleImages = sample ? (await sample.limits()).images : null;
   showOnly("appShell");
   save();
+  refreshStudentHome(); clearInterval(homeTimer); homeTimer = setInterval(()=>{ if(!document.hidden) refreshStudentHome(); }, 300000);
   const hash = (location.hash||"").slice(1);
   go(["today","practice","plan","weak","tutor"].includes(hash) ? hash : "today");
   refreshAiPerm();
@@ -3138,49 +3178,164 @@ function renderAccountCard(){
 }
 
 /* ---- parent dashboard ---- */
-let parentTimer=null;
+let parentTimer=null, pKids=[], pSel=null, pHome=null;
 async function enterParent(){
   showOnly("parentApp");
   $("pHello").textContent = `Welcome, ${(profile.full_name||"").split(/\s+/)[0] || "parent"}.`;
   $("pAccount").textContent = session.user.email;
+  if(cfg && cfg.aiEnabled && !sample) sample = makeSample();
+  try{ const {data} = await sb.rpc("my_home"); pHome = data; }catch(e){ pHome = null; }
+  renderHomeExtras("pBanner", pHome);
   await refreshParent();
   clearInterval(parentTimer); parentTimer = setInterval(()=>{ if(!document.hidden) refreshParent(); }, 60000);
 }
 async function refreshParent(){
-  const [{data:links},{data:invites}] = await Promise.all([
-    sb.from("links").select("student_id, created_at, profiles!links_student_id_fkey(full_name)").eq("parent_id", profile.id),
-    sb.from("invites").select("*").eq("parent_id", profile.id).is("used_by", null).order("created_at",{ascending:false})
-  ]);
-  const ids = (links||[]).map(l=>l.student_id);
-  let reports=[], usage=[];
-  if(ids.length){
-    const since = new Date(Date.now()-7*864e5).toISOString();
-    const [r,u] = await Promise.all([ sb.from("reports").select("*").in("student_id", ids), sb.from("ai_usage").select("user_id, created_at").in("user_id", ids).gte("created_at", since) ]);
-    reports = r.data||[]; usage = u.data||[];
-  }
-  const kids = (links||[]).map(l=>{ const rep = reports.find(r=>r.student_id===l.student_id); const d = rep ? rep.data : {};
-    return {id:l.student_id, ...d, name:(l.profiles&&l.profiles.full_name)||d.name||"Student", ts:rep?Date.parse(rep.updated_at):null, ai7:usage.filter(u=>u.user_id===l.student_id).length}; });
-  renderParentDash(kids);
-  $("pInvites").innerHTML = (invites||[]).length ? `<h3>Unused family codes</h3>${invites.map(i=>`<div class="spread inv"><span><b class="num codeTxt">${esc(i.code)}</b>${i.child_name?` <span class="note">for ${esc(i.child_name)}</span>`:""}<br><span class="note">Created ${new Date(i.created_at).toLocaleDateString("en-GB",{day:"numeric",month:"short"})} · expires after 14 days</span></span><button class="btn ghost sm" data-delinv="${esc(i.code)}">Delete</button></div>`).join("")}` : "";
+  const [dash, inv] = await Promise.all([ sb.rpc("parent_dashboard"),
+    sb.from("invites").select("*").eq("parent_id", profile.id).is("used_by", null).order("created_at",{ascending:false}) ]);
+  const invites = inv.data || [];
+  $("pInvites").innerHTML = invites.length ? `<h3>Unused family codes</h3>${invites.map(i=>`<div class="spread inv"><span><b class="num codeTxt">${esc(i.code)}</b>${i.child_name?` <span class="note">for ${esc(i.child_name)}</span>`:""}<br><span class="note">Created ${new Date(i.created_at).toLocaleDateString("en-GB",{day:"numeric",month:"short"})} · expires after 14 days</span></span><button class="btn ghost sm" data-delinv="${esc(i.code)}">Delete</button></div>`).join("")}` : "";
+  if(dash.error){ $("pKids").innerHTML = `<div class="card stack"><h2>Dashboard needs an update</h2><p class="muted">The database is missing the new parent dashboard. Run the latest supabase/schema.sql in the Supabase SQL editor, then refresh.</p><p class="note">${esc(dash.error.message)}</p></div>`; return; }
+  pKids = dash.data || [];
+  if(!pKids.find(k=>k.id===pSel)) pSel = pKids[0] ? pKids[0].id : null;
+  $("pAddCard").classList.toggle("compact", pKids.length>0);
+  renderParentDash();
 }
-function renderParentDash(kids){
+
+/* helpers that work on a child's saved state (same shapes the student app uses) */
+const kidTopics = st => Object.entries((st && st.stats) || {}).map(([k,v])=>{ const [s,t]=k.split("|"); return {s, t, c:v.c||0, n:v.n||0, p:v.n?Math.round(100*(v.c||0)/v.n):0, avg:v.tn?Math.round((v.ms||0)/v.tn/1000):0}; }).filter(x=>x.n>0);
+const sessPct = x => x.total ? Math.round(100*x.score/x.total) : 0;
+function weekStats(sessions, weeksAgo){
+  const end = Date.now() - weeksAgo*7*864e5, start = end - 7*864e5;
+  const xs = sessions.filter(x=>x.ts>=start && x.ts<end);
+  const sc = xs.reduce((a,x)=>a+(x.score||0),0), tot = xs.reduce((a,x)=>a+(x.total||0),0);
+  return {n:xs.length, pct: tot?Math.round(100*sc/tot):null, qs: tot};
+}
+function trendChart(sessions){
+  const xs = sessions.slice(-30); if(!xs.length) return `<p class="muted">No tests yet.</p>`;
+  const W=300, H=90, n=xs.length, slot=W/Math.max(n,12), bw=Math.max(3, slot-3);
+  const bars = xs.map((x,i)=>{ const p=sessPct(x), h=Math.max(2, p/100*(H-2)), X=i*slot+1.5, Y=H-h, r=Math.min(2,bw/2);
+    const cls = x.integrity && x.integrity.flag ? "tb flag" : p>=75 ? "tb hi" : p>=50 ? "tb mid" : "tb lo";
+    return `<path class="${cls}" d="M${X},${H} V${Y+r} Q${X},${Y} ${X+r},${Y} H${X+bw-r} Q${X+bw},${Y} ${X+bw},${Y+r} V${H} Z"><title>${esc(new Date(x.ts).toLocaleDateString("en-GB",{day:"numeric",month:"short"}))} · ${esc(x.subject)} ${esc(x.label||"")}: ${x.score}/${x.total} (${p}%)${x.integrity&&x.integrity.flag?" · flagged":""}</title></path>`; }).join("");
+  const g = y => `<line class="tg" x1="0" x2="${W}" y1="${H-y/100*(H-2)}" y2="${H-y/100*(H-2)}"/>`;
+  return `<svg class="trend" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Score per test, oldest to newest">${g(50)}${g(75)}${bars}<line class="tg base" x1="0" x2="${W}" y1="${H}" y2="${H}"/></svg>
+    <div class="spread note"><span>Oldest</span><span>Newest</span></div><div class="row note" style="gap:12px"><span><i class="key hi"></i>75%+</span><span><i class="key mid"></i>50–74%</span><span><i class="key lo"></i>under 50%</span><span><i class="key flag"></i>flagged test</span></div><p class="note">Dashed lines mark 50% (credit) and 75% (A1).</p>`;
+}
+function activityGrid(sessions){
+  const days = 56, today = new Date(); today.setHours(0,0,0,0);
+  const count = {}; sessions.forEach(x=>{ const d=new Date(x.ts); d.setHours(0,0,0,0); count[d.getTime()] = (count[d.getTime()]||0)+1; });
+  const start = new Date(today.getTime() - (days-1)*864e5); const lead = (start.getDay()+6)%7;  // weeks start Monday
+  const cells = []; for(let i=0;i<lead;i++) cells.push(`<i class="ac pad"></i>`);
+  let active = 0;
+  for(let i=0;i<days;i++){ const d = new Date(start.getTime()+i*864e5), n = count[d.getTime()]||0; if(n) active++;
+    cells.push(`<i class="ac l${Math.min(n,3)}" title="${d.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"})}: ${n} test${n===1?"":"s"}"></i>`); }
+  return {html:`<div class="agrid">${cells.join("")}</div><div class="spread note"><span>8 weeks ago</span><span class="row" style="gap:6px">Fewer <i class="ac l0"></i><i class="ac l1"></i><i class="ac l2"></i><i class="ac l3"></i> More</span><span>Today</span></div>`, active};
+}
+function topicRows(list, good){
+  return list.length ? list.map(x=>`<div class="trow"><div><b>${esc(x.t)}</b> <span class="note">${esc(x.s)}</span></div><div class="track"><div class="fill ${good?"ok":x.p<50?"bad":"warn"}" style="width:${Math.max(x.p,3)}%"></div></div><span class="num note">${x.p}% · ${x.n}q${x.avg?` · ${x.avg}s`:""}</span></div>`).join("") : `<p class="note">${good?"No strong topics yet. They appear after a few correct answers in a topic.":"Nothing weak yet, or not enough answers to tell."}</p>`;
+}
+function renderParentDash(){
   const el=$("pKids");
-  if(!kids.length){ el.innerHTML = `<div class="card stack"><h2>No children linked yet</h2><p class="muted">Tap “Add a child” to get a 6-letter family code. Your child creates a student account and enters the code, and their progress appears here.</p></div>`; return; }
-  el.innerHTML = kids.map(k=>{
-    const flagged = (k.sessions||[]).filter(x=>x.integrity && x.integrity.flag).length;
-    return `<div class="card stack"><div class="spread"><h2>${esc(k.name)}</h2><span class="note">${k.ts?`Last active ${new Date(k.ts).toLocaleString("en-GB",{weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}`:"No activity yet"}</span></div>
-      ${k.readiness?`<div class="row"><span class="pill none num">Level ${k.level||1} · ${k.xp||0} XP</span><span class="pill none num">${k.streak||0}-day streak</span><span class="pill none num">${k.today||0} questions today</span><span class="pill none num">${k.ai7} AI requests this week</span><span class="pill ${flagged?"bad":"ok"}">${flagged?`${flagged} flagged test${flagged>1?"s":""}`:"All tests clean"}</span></div>
-      <div class="tbl"><table><thead><tr><th class="label">Exam</th><th class="label">Ready</th><th class="label">Subjects (projected vs target)</th></tr></thead><tbody>
-      ${(k.readiness||[]).map(r=>`<tr><td><b>${esc(r.exam)}</b>${r.days!==null&&r.days!==undefined?`<br><span class="note num">${r.next?esc(r.next)+" · ":""}${r.days<=0?"today":r.days+" days"}</span>`:""}</td><td class="num">${r.prep===null?"—":r.prep+"%"}${r.projScore?`<br><span class="note">${r.projScore}/400</span>`:""}</td><td class="note">${(r.subjects||[]).map(s=>`${esc(s.s)}: ${s.sat?"sat":s.proj===null?"—":s.proj+"%"} / ${esc(String(s.target))}`).join(" · ")}</td></tr>`).join("")}
-      </tbody></table></div>
-      <h3>Recent tests</h3>
+  if(!pKids.length){ el.innerHTML = `<div class="card stack"><h2>No children linked yet</h2><p class="muted">Use “Add a child” to get a 6-letter family code. Your child creates a student account and enters the code, and their progress appears here.</p></div>`; return; }
+  const k = pKids.find(x=>x.id===pSel) || pKids[0], rep = k.report || {}, st = k.state || {};
+  const sessions = (st.sessions || rep.sessions || []).filter(x=>x && x.ts).sort((a,b)=>a.ts-b.ts);
+  const w0 = weekStats(sessions,0), w1 = weekStats(sessions,1);
+  const flagged = sessions.filter(x=>x.integrity && x.integrity.flag).length;
+  const topics = kidTopics(st), weak = topics.filter(x=>x.n>=3 && x.p<60).sort((a,b)=>a.p-b.p||b.n-a.n).slice(0,6), strong = topics.filter(x=>x.n>=3 && x.p>=75).sort((a,b)=>b.p-a.p||b.n-a.n).slice(0,6);
+  const act = activityGrid(sessions), mistakes = (st.mistakes||[]).slice().reverse();
+  const lastTs = k.progress_at || k.report_at;
+  const delta = (w0.pct!=null && w1.pct!=null) ? w0.pct - w1.pct : null;
+  const tasks = k.tasks || [], open = tasks.filter(t=>!t.done_at), done = tasks.filter(t=>t.done_at);
+  const subs = st.subjects || (rep.readiness && rep.readiness[0] ? rep.readiness[0].subjects.map(s=>s.s) : []);
+  const briefKey = `er.brief.${k.id}.${ymd(new Date())}`; let brief = null; try{ brief = localStorage.getItem(briefKey); }catch(e){}
+  el.innerHTML = `
+    ${pKids.length>1?`<div class="chips" id="pKidTabs" role="tablist">${pKids.map(x=>`<button class="chip" role="tab" data-kid="${esc(x.id)}" aria-pressed="${x.id===k.id}">${esc(x.name)}</button>`).join("")}</div>`:""}
+    <div class="card stack">
+      <div class="spread"><h2 style="font-size:1.5rem">${esc(k.name)}</h2><span class="note">${lastTs?`Last practised ${new Date(lastTs).toLocaleString("en-GB",{weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}`:"Hasn't practised yet"}</span></div>
+      ${k.status==="suspended"?`<p class="pill bad">This account is paused by the Exam Ready team.</p>`:""}
+      <div class="ptiles">
+        <div class="ptile"><span class="label">This week</span><b class="num">${w0.n}</b><span class="note">test${w0.n===1?"":"s"} · ${w1.n} the week before</span></div>
+        <div class="ptile"><span class="label">Average score</span><b class="num">${w0.pct==null?"—":w0.pct+"%"}</b><span class="note">${delta==null?"this week":delta===0?"same as last week":(delta>0?"▲ ":"▼ ")+Math.abs(delta)+" pts vs last week"}</span></div>
+        <div class="ptile"><span class="label">Days active</span><b class="num">${act.active}</b><span class="note">of the last 56</span></div>
+        <div class="ptile"><span class="label">Streak</span><b class="num">${rep.streak||0}</b><span class="note">day${(rep.streak||0)===1?"":"s"} · ${rep.today||0} questions today</span></div>
+        <div class="ptile"><span class="label">AI tutor</span><b class="num">${(k.ai&&k.ai.d7)||0}</b><span class="note">requests this week</span></div>
+        <div class="ptile ${flagged?"bad":""}"><span class="label">Test integrity</span><b class="num">${flagged}</b><span class="note">${flagged?"flagged test"+(flagged>1?"s":""):"all tests clean"}</span></div>
+      </div>
+    </div>
+
+    ${sample?`<div class="card stack" id="pBrief"><div class="spread"><h2>Weekly briefing</h2>${brief?`<button class="btn ghost sm" data-brief="1">Rewrite</button>`:""}</div>
+      ${brief?`<div class="briefTxt">${md(brief)}</div>`:`<p class="muted">A short, plain-language summary of how ${esc(k.name.split(/\s+/)[0])} is doing and one way you can help this week.</p><div><button class="btn accent sm" data-brief="1">Write this week's briefing</button></div>`}</div>`:""}
+
+    <div class="grid2">
+      <div class="card stack"><h2>Score per test</h2><p class="note">Last ${Math.min(sessions.length,30)} tests. Hover a bar for details.</p>${trendChart(sessions)}</div>
+      <div class="card stack"><h2>Practice calendar</h2><p class="note">Tests finished per day.</p>${act.html}</div>
+    </div>
+
+    ${rep.readiness?`<div class="card stack"><h2>Exam readiness</h2><div class="tbl"><table><thead><tr><th class="label">Exam</th><th class="label">Ready</th><th class="label">Subjects (projected vs target)</th></tr></thead><tbody>
+      ${(rep.readiness||[]).map(r=>`<tr><td><b>${esc(r.exam)}</b>${r.days!==null&&r.days!==undefined?`<br><span class="note num">${r.next?esc(r.next)+" · ":""}${r.days<=0?"today":r.days+" days"}</span>`:""}</td><td class="num">${r.prep===null?"—":r.prep+"%"}${r.projScore?`<br><span class="note">${r.projScore}/400</span>`:""}</td><td class="note">${(r.subjects||[]).map(s=>`${esc(s.s)}: ${s.sat?"sat":s.proj===null?"—":s.proj+"%"} / ${esc(String(s.target))}`).join(" · ")}</td></tr>`).join("")}
+      </tbody></table></div><p class="note">Readiness combines accuracy, how much of the syllabus has been covered and speed. It firms up after about 40 answers per subject.</p></div>`:""}
+
+    <div class="grid2">
+      <div class="card stack"><h2>Needs work</h2><p class="note">Lowest-scoring topics (3+ answers). Accuracy · questions · seconds per question.</p>${topicRows(weak,false)}</div>
+      <div class="card stack"><h2>Strong topics</h2><p class="note">Topics at 75% or better.</p>${topicRows(strong,true)}</div>
+    </div>
+
+    <div class="card stack"><div class="spread"><h2>Recent mistakes</h2><span class="note">${mistakes.length} saved</span></div>
+      ${mistakes.length?`<div class="mlist">${mistakes.slice(0,6).map(m=>mistakeRow(m)).join("")}</div>${mistakes.length>6?`<details><summary class="note">Show all ${mistakes.length}</summary><div class="mlist">${mistakes.slice(6).map(m=>mistakeRow(m)).join("")}</div></details>`:""}`:`<p class="muted">No mistakes recorded yet.</p>`}
+    </div>
+
+    <div class="card stack"><h2>Tasks and notes for ${esc(k.name.split(/\s+/)[0])}</h2>
+      <p class="note">Tasks appear on ${esc(k.name.split(/\s+/)[0])}'s Today screen with a tick box. Notes show as a message from you.</p>
+      <form id="pTaskForm" class="stack" style="gap:8px">
+        <div class="chips" id="pTaskKind"><button type="button" class="chip" data-kind="task" aria-pressed="true">Task</button><button type="button" class="chip" data-kind="note" aria-pressed="false">Note of encouragement</button></div>
+        <input id="pTaskTitle" maxlength="200" required placeholder="e.g. Do two timed Maths papers" autocomplete="off">
+        <div class="row" id="pTaskExtra"><select id="pTaskSubj"><option value="">Any subject</option>${subs.map(s=>`<option>${esc(s)}</option>`).join("")}</select><label class="note">Due <input type="date" id="pTaskDue" min="${ymd(new Date())}"></label><button class="btn accent sm" type="submit">Add</button></div>
+      </form>
+      ${open.length||done.length?`<div class="tasks">${open.concat(done).map(t=>`<div class="ptask ${t.done_at?"done":""}"><span class="ptick" aria-hidden="true">${t.done_at?"✓":t.kind==="note"?"✉":"○"}</span><div><b>${esc(t.title)}</b>${t.subject?` <span class="note">· ${esc(t.subject)}</span>`:""}<br><span class="note">${t.kind==="note"?(t.done_at?"Read ":"Sent ")+(new Date(t.done_at||t.created_at).toLocaleDateString("en-GB",{day:"numeric",month:"short"})):t.done_at?"Done "+new Date(t.done_at).toLocaleDateString("en-GB",{day:"numeric",month:"short"}):t.due?(new Date(t.due+"T23:59")<new Date()?"Overdue · was due ":"Due ")+new Date(t.due+"T12:00").toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"}):"Open"}</span></div><button class="btn ghost sm" data-deltask="${t.id}">Remove</button></div>`).join("")}</div>`:`<p class="muted">Nothing set yet.</p>`}
+    </div>
+
+    <div class="card stack"><h2>Recent tests</h2>
       <div class="tbl"><table><thead><tr><th class="label">When</th><th class="label">Test</th><th class="label">Score</th><th class="label">Integrity</th></tr></thead><tbody>
-      ${(k.sessions||[]).slice().reverse().slice(0,15).map(x=>`<tr><td class="note num">${new Date(x.ts).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}</td><td>${esc(x.subject)} <span class="note">· ${esc(x.label)}</span></td><td class="num">${x.score}/${x.total}${x.avg?` <span class="note">${x.avg}s/q</span>`:""}</td><td>${x.integrity?integrityLine(x.integrity):`<span class="note">—</span>`}</td></tr>`).join("") || `<tr><td colspan="4" class="muted">No tests yet.</td></tr>`}
-      </tbody></table></div>`:`<p class="muted">Linked. Their scores will appear after their first practice session.</p>`}
-      <div class="row"><button class="btn ghost sm" data-unlink="${k.id}" data-name="${esc(k.name)}">Remove link</button></div></div>`; }).join("");
+      ${sessions.slice().reverse().slice(0,15).map(x=>`<tr><td class="note num">${new Date(x.ts).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}</td><td>${esc(x.subject)} <span class="note">· ${esc(x.label)}</span></td><td class="num">${x.score}/${x.total}${x.avg?` <span class="note">${x.avg}s/q</span>`:""}</td><td>${x.integrity?integrityLine(x.integrity):`<span class="note">—</span>`}</td></tr>`).join("") || `<tr><td colspan="4" class="muted">No tests yet.</td></tr>`}
+      </tbody></table></div></div>
+
+    <div class="row"><button class="btn ghost sm" data-unlink="${esc(k.id)}" data-name="${esc(k.name)}">Remove link to ${esc(k.name)}</button></div>`;
+  const kindChips = $("pTaskKind");
+  kindChips.onclick = e=>{ const b=e.target.closest("[data-kind]"); if(!b) return; kindChips.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", x===b));
+    const note = b.dataset.kind==="note"; $("pTaskTitle").placeholder = note ? "e.g. Proud of how hard you worked this week!" : "e.g. Do two timed Maths papers"; $("pTaskSubj").hidden = note; $("pTaskDue").parentNode.hidden = note; };
+  $("pTaskForm").onsubmit = async e=>{ e.preventDefault();
+    const kind = kindChips.querySelector('[aria-pressed="true"]').dataset.kind, title = $("pTaskTitle").value.trim(); if(!title) return;
+    const {error} = await sb.rpc("add_task", {p_student:k.id, p_kind:kind, p_title:title, p_detail:"", p_subject: kind==="task" ? $("pTaskSubj").value : "", p_due: kind==="task" && $("pTaskDue").value ? $("pTaskDue").value : null});
+    if(error) return toast(error.message); toast(kind==="note"?"Note sent":"Task added"); refreshParent(); };
+}
+function mistakeRow(m){
+  return `<div class="mrow"><div class="note">${esc(m.s)} · ${esc(m.t)}${m.ts?` · ${new Date(m.ts).toLocaleDateString("en-GB",{day:"numeric",month:"short"})}`:""}</div><div>${esc(String(m.q||"").slice(0,220))}${String(m.q||"").length>220?"…":""}</div><div class="note"><span class="bad-text">Chose: ${esc(m.chose)}</span> · <span class="ok-text">Correct: ${esc(m.right)}</span></div></div>`;
+}
+async function writeBriefing(k){
+  const box = $("pBrief"); if(!box || !sample) return;
+  const st = k.state || {}, rep = k.report || {}, sessions = (st.sessions||rep.sessions||[]).filter(x=>x&&x.ts);
+  const recent = sessions.filter(x=>x.ts > Date.now()-14*864e5).map(x=>`${new Date(x.ts).toDateString()}: ${x.subject} ${x.label} ${x.score}/${x.total}${x.integrity&&x.integrity.flag?" (flagged: left the app or pasted)":""}`).join("\n") || "No tests in the last two weeks.";
+  const topics = kidTopics(st).filter(x=>x.n>=3).sort((a,b)=>a.p-b.p);
+  const ready = (rep.readiness||[]).map(r=>`${r.exam}: readiness ${r.prep==null?"unknown":r.prep+"%"}${r.days!=null?`, ${r.days} days to go`:""}; ${(r.subjects||[]).map(s=>`${s.s} projected ${s.proj==null?"unknown":s.proj+"%"} vs target ${s.target}`).join(", ")}`).join("\n");
+  const prompt = `You are writing a short weekly briefing for a Nigerian parent about their child's exam preparation in the Exam Ready app. Write for a busy parent: warm, honest, plain English, no jargon.
+Child: ${k.name}. Today: ${new Date().toDateString()}.
+Tests in the last 14 days:\n${recent}
+Weakest topics (accuracy, answers): ${topics.slice(0,5).map(x=>`${x.s} – ${x.t} ${x.p}% (${x.n})`).join("; ") || "not enough data"}
+Strongest topics: ${topics.slice(-3).reverse().filter(x=>x.p>=75).map(x=>`${x.s} – ${x.t} ${x.p}%`).join("; ") || "none yet"}
+Readiness:\n${ready || "not enough data"}
+AI tutor requests this week: ${(k.ai&&k.ai.d7)||0}. Streak: ${rep.streak||0} days.
+Write exactly three short paragraphs and nothing else: 1) how the week went, with numbers; 2) the one or two areas that matter most before the nearest exam and why; 3) one concrete thing the parent can do this week to help (encouragement or routine, not teaching the subject). Under 160 words. Use **bold** for at most three key phrases. If there is little data, say so and suggest a simple routine to start.`;
+  box.innerHTML = `<h2>Weekly briefing</h2><p class="muted">Writing… this takes a few seconds.</p>`;
+  try{
+    const {text} = await sample(prompt, {modelTier:"default", kind:"briefing"});
+    try{ localStorage.setItem(`er.brief.${k.id}.${ymd(new Date())}`, text); }catch(e){}
+  }catch(e){ toast(e.message || "Couldn't write the briefing"); }
+  renderParentDash();
 }
 $("parentApp").addEventListener("click", async e=>{
   const b=e.target.closest("button"); if(!b) return;
+  if(b.dataset.kid){ pSel = b.dataset.kid; renderParentDash(); return; }
+  if(b.dataset.brief){ const k = pKids.find(x=>x.id===pSel); if(k) writeBriefing(k); return; }
+  if(b.dataset.deltask){ if(b.dataset.confirm!=="1"){ b.dataset.confirm="1"; b.textContent="Tap to confirm"; return; } const {error} = await sb.from("tasks").delete().eq("id", +b.dataset.deltask); if(error) toast(error.message); refreshParent(); return; }
   if(b.id==="pAdd"){ const nm = $("pChildName").value.trim(); const {data,error} = await sb.rpc("create_invite",{p_child_name:nm}); if(error) return toast(error.message);
     $("pNewCode").hidden=false; $("pNewCode").innerHTML = `<span class="label">Family code</span><div class="bigcode num">${esc(data)}</div><p class="note">Give this to ${nm?esc(nm):"your child"}. They create a <b>student</b> account at <b>${esc(location.host)}</b> and enter the code (or add it later under Today → Account). Single use, valid 14 days.</p>`;
     $("pChildName").value=""; refreshParent(); }
@@ -3189,6 +3344,43 @@ $("parentApp").addEventListener("click", async e=>{
     await sb.from("links").delete().eq("parent_id", profile.id).eq("student_id", b.dataset.unlink); refreshParent(); }
   if(b.id==="pRefresh") refreshParent();
   if(b.id==="pSignOut") signOut();
+});
+
+/* ---- shared: announcement banner, admin link, parent's tasks on the student's Today screen ---- */
+function renderHomeExtras(boxId, home){
+  const box = $(boxId); if(!box) return;
+  const parts = [];
+  if(home && home.announcement && home.announcement.text) parts.push(`<div class="announce" role="status"><span class="label">Announcement</span><p>${esc(home.announcement.text)}</p></div>`);
+  if(home && home.is_admin) parts.push(`<div><a class="btn ghost sm" href="/admin">Open admin console</a></div>`);
+  box.innerHTML = parts.join(""); box.hidden = !parts.length;
+}
+let homeTimer = null;
+async function refreshStudentHome(){
+  let home = null; try{ const {data, error} = await sb.rpc("my_home"); if(!error) home = data; }catch(e){}
+  if(!home) return;
+  if(home.status==="suspended"){ showSuspended(home.suspended_reason); return; }
+  renderHomeExtras("homeBanner", home);
+  const el = $("parentTasks"); if(!el) return;
+  const tasks = (home.tasks||[]); const open = tasks.filter(t=>!t.done_at), done = tasks.filter(t=>t.done_at && t.kind==="task");
+  if(!open.length && !done.length){ el.hidden = true; return; }
+  el.hidden = false;
+  el.innerHTML = `<div class="spread"><h2>From your parent</h2><span class="note">${open.filter(t=>t.kind==="task").length} to do</span></div>
+    ${open.map(t=> t.kind==="note"
+      ? `<div class="pnote"><span class="label">Note from ${esc(t.from||"your parent")}</span><p>${esc(t.title)}</p><div><button class="btn ghost sm" data-done="${t.id}">Thanks!</button></div></div>`
+      : `<label class="ptask"><input type="checkbox" data-done="${t.id}"><div><b>${esc(t.title)}</b>${t.subject?` <span class="note">· ${esc(t.subject)}</span>`:""}${t.due?`<br><span class="note">${new Date(t.due+"T23:59")<new Date()?"Overdue · was due ":"Due "}${new Date(t.due+"T12:00").toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"})}</span>`:""}</div></label>`).join("")}
+    ${done.length?`<details><summary class="note">Done this week (${done.length})</summary>${done.map(t=>`<label class="ptask done"><input type="checkbox" checked data-undo="${t.id}"><div><b>${esc(t.title)}</b></div></label>`).join("")}</details>`:""}`;
+}
+function showSuspended(reason){
+  $("bootMsg").innerHTML = `<div class="card stack" style="max-width:520px;margin:10vh auto"><h1>Account paused</h1><p class="muted">This account has been paused by the Exam Ready team${reason?`: ${esc(reason)}`:"."}</p><p class="note">If you think this is a mistake, ask your parent or school to contact us.</p><div><button class="btn ghost" id="suspOut">Sign out</button></div></div>`;
+  showOnly("bootMsg"); $("suspOut").onclick = signOut;
+}
+document.addEventListener("click", async e=>{
+  const t = e.target.closest("#parentTasks [data-done], #parentTasks [data-undo]"); if(!t) return;
+  const id = +(t.dataset.done || t.dataset.undo), undo = !!t.dataset.undo;
+  const {error} = await sb.rpc("complete_task", {p_id:id, p_done:!undo});
+  if(error) return toast(error.message);
+  if(!undo){ S.taskXP = S.taskXP || []; if(t.tagName==="INPUT" && !S.taskXP.includes(id)){ S.taskXP = S.taskXP.concat(id).slice(-200); addXP(5); celebrate("Task done! +5 XP"); save(); } }
+  refreshStudentHome();
 });
 
 /* ---- boot ---- */

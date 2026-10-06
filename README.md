@@ -17,6 +17,8 @@ Students and parents have separate accounts. A parent links to a child with a 6-
 |---|---|---|
 | `public/index.html` | Vercel (static) | The whole app: student screens, parent dashboard, sign-in. |
 | `api/ai.js` | Vercel function | Checks the user's session and daily limit, then calls the Anthropic API. The API key never reaches the browser. |
+| `api/admin.js` | Vercel function | Admin-only actions that need the service key (deleting an account). |
+| `public/admin.html` | Vercel (static) | The admin console at `/admin`. |
 | `api/config.js` | Vercel function | Gives the browser the Supabase URL and the public anon key. |
 | `supabase/schema.sql` | Supabase | Tables, row-level security, sign-up trigger and the family-code functions. |
 
@@ -91,6 +93,52 @@ This brings across:
 - Badges
 - Targets
 - Paper dates
+
+## Admin console
+
+Open `/admin` while signed in with an admin account. It has five sections:
+
+- **Overview.** Sign-ups, active students, tests taken, AI requests and estimated AI cost, with 30-day charts.
+- **Users.** Search every account and open its detail: links, progress, AI use and any safety flags. From there you can:
+  - Set a personal daily AI cap.
+  - Suspend or reactivate the account.
+  - Grant or remove admin access.
+  - Unlink a parent.
+  - Permanently delete the account and its data, for example for a data-deletion request.
+- **Safety.** The tutor flags a conversation when a student's message suggests they may be at risk (self-harm, abuse, feeling unsafe). The model flags it, and a keyword check acts as a backstop. Only the flagged message and the tutor's reply are stored. An admin records what they did for each flag.
+- **Settings.** Contains:
+  - A switch that pauses all AI at once.
+  - The default daily AI limit.
+  - A banner announcement for everyone, students only or parents only.
+  - Per-model token prices for the cost estimates.
+- **Audit log.** Every admin action, with who did it and when.
+
+**Make yourself the first admin.** After running `schema.sql`, run this once in the Supabase SQL editor, using your own email:
+
+```sql
+insert into public.admins(user_id) select id from auth.users where email = 'you@example.com' on conflict do nothing;
+```
+
+After that, add other admins from **Users** in the console.
+
+## Parent dashboard
+
+For each linked child, a parent sees:
+
+- **This week vs last week:** tests taken, average score, days active, streak, AI use and test integrity.
+- **Charts:** a score-per-test chart (flagged tests are shown in grey) and an 8-week practice calendar.
+- **Exam readiness**, plus the weakest and strongest topics, with accuracy and speed.
+- **Recent mistakes:** each question, what the child chose and the correct answer.
+- **Tasks and notes** the parent sets. Tasks appear on the child's Today screen with a tick box; notes appear as a message from the parent.
+- **A weekly briefing**, written by AI: three short paragraphs and one way to help this week. It counts towards the parent's own AI allowance.
+
+Parents with several children switch between them at the top.
+
+## Upgrading an existing installation
+
+1. Run the whole `supabase/schema.sql` again in the SQL editor. It's safe to re-run and keeps existing data. It also fixes the "gen_random_bytes does not exist" error when creating family codes.
+2. Make yourself an admin (see above).
+3. Deploy the new code.
 
 ## Costs
 
