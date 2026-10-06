@@ -1,0 +1,8 @@
+{
+  "name": "exam-ready",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Exam prep for WAEC, GCE, NECO and JAMB with an AI tutor, proctored practice and a parent dashboard.",
+  "engines": { "node": ">=18" },
+  "scripts": { "dev": "vercel dev" }
+}
