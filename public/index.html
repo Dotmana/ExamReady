@@ -1883,7 +1883,7 @@ TB("WASSCE 2020 Biology Paper 2","WASSCE",2020,BW,6,[
  "(f)(i) Water softens the seed coat, activates enzymes, dissolves stored food for transport, and makes cells turgid for growth (2). (ii) Only a living embryo with stored food can grow; a dead seed cannot germinate (2). (g) Light provides the energy for photosynthesis (splitting water / making ATP) (2); when light is low, the rate of photosynthesis is limited however much CO₂ and water are present, so food production depends on it (2)."]
 ],"Section B (Ghana only) is not included.");
 
-// ---- Physics theory (essay) — WAEC GCE Paper 2: 2018 2nd series Q1–12, 2017 Q1–4, Nov/Dec 2013 Q9–15.
+// ---- Physics theory (essay) — WAEC GCE Paper 2: 2018 2nd series Q1–12, 2017 Q1–4, Nov/Dec 2013 Q9–15, Nov/Dec 2012 Q1–10.
 // From screenshots of waeconline.org.ng e-learning. Marks are estimated (not shown on screen).
 // Where WAEC's expected answer was visible it is quoted; the rest of the marking points are Claude's.
 // Diagrams are described in words. 2017 Q5–12 and 2013 Q1–8 were not supplied. 2018 Q11(c) shows only part (i).
@@ -2092,6 +2092,65 @@ TP(PK13,"GCE",2013,PP13,15,[
 ["(d)(ii)","Photoelectric effect",3,"Calculate the maximum energy of the liberated electrons.",
  "Photon energy E = hc/λ = 1.98 × 10⁻²⁵ ÷ 5.0 × 10⁻⁷ = 3.96 × 10⁻¹⁹ J (1). KEmax = E − W = 3.96 × 10⁻¹⁹ − 3.2 × 10⁻¹⁹ (1) = 7.6 × 10⁻²⁰ J (≈ 0.48 eV) (1)."]
 ], "Section B. Part (a) was rarely attempted.");
+
+const PK12 = "GCE 2012 Physics Paper 2 (Nov/Dec)";
+TP(PK12,"GCE",2012,PP13,1,[
+["","Projectile motion",2,"A ball is projected horizontally from the top of a tall building. State the factors on which the distance at which it strikes the ground from the foot of the building depends.",
+ "The horizontal speed of projection (1) and the height of the building, which fixes the time of flight (1) (accept also the acceleration due to gravity, g). Range = u × √(2h/g). The examiner noted most candidates gave only the speed of projection and left out the second factor."]
+], "Section A. Very popular, but most candidates gave only one factor.");
+
+TP(PK12,"GCE",2012,PP13,2,[
+["","Elasticity",4,"The upward acceleration of a lift of total mass 2500 kg is 0.5 m s⁻². The lift is supported by a steel cable which has a maximum safe working stress of 1.0 × 10⁷ N m⁻². Determine the cross-sectional area of the cable. (g = 10 m s⁻²)",
+ "Tension when accelerating upwards: T = m(g + a) (1) = 2500 × (10 + 0.5) = 26 250 N (1). Stress = force ÷ area, so A = T ÷ stress (1) = 26 250 ÷ 1.0 × 10⁷ = 2.6 × 10⁻³ m² (1). Key point the examiner stressed: in a lift accelerating upwards the tension is greater than the weight (apparent weight increases)."]
+], "Section A. Not popular and poorly attempted.");
+
+TP(PK12,"GCE",2012,PP13,3,[
+["(a)","Waves",2,"Differentiate between plane polarization and interference as applied to waves.",
+ "WAEC expected answer: Plane polarization is the confinement of the vibrations (of a wave) to one plane; it is an attribute of transverse waves only (1). Interference is the effect produced when two waves of the same frequency/wavelength and amplitude travelling in the same direction in a medium are superposed; it is an attribute of both transverse and longitudinal waves (1)."],
+["(b)","Waves",2,"List two uses of polaroids.",
+ "Any two (1 each): sunglasses to reduce glare; camera filters; stress analysis of transparent models in engineering; 3-D film glasses; liquid crystal (LCD) displays; measuring sugar concentration (saccharimeter)."]
+], "Section A. Popular; performance was commendable.");
+
+TP(PK12,"GCE",2012,PP13,4,[
+["","Elasticity",3,"A wire of length 55 m and force constant 700 N m⁻¹ extends to 55.06 m when loaded. Calculate the work done by the load.",
+ "Extension e = 55.06 − 55 = 0.06 m (1). W = ½ke² (1) = ½ × 700 × 0.06² = 1.26 J (1). Common errors from the examiner's report: using W = ½ke, and the arithmetic slip 55.06 − 55 = 0.6."]
+], "Section A. Well attempted.");
+
+TP(PK12,"GCE",2012,PP13,5,[
+["","Surface tension",3,"A needle floating on the surface of water sinks when a drop of detergent is added to the water. Explain this observation.",
+ "WAEC expected answer: the needle floats because of surface tension (1). The detergent reduces/weakens the surface tension of the water (1), so there is a resultant (net) downward force on the needle, which causes it to sink (1). Do NOT explain it using upthrust — the examiner marked that wrong."]
+], "Section A. Most candidates wrongly used upthrust or forgot the resultant downward force.");
+
+TP(PK12,"GCE",2012,PP13,6,[
+["","Electrolysis",4,"When a steady current of 1.57 A is passed through a copper voltameter for 20.0 minutes, a mass of 0.625 × 10⁻³ kg of copper is deposited on the cathode. Calculate the relative atomic mass of copper. (1 F = 96 500 C)",
+ "Q = It = 1.57 × 20 × 60 = 1884 C (1). Cu²⁺ + 2e⁻ → Cu, so 2 F = 193 000 C deposits one mole of copper (1). Relative atomic mass = mass deposited × 2F ÷ Q = 0.625 g × 193 000 ÷ 1884 (1) = 64 (1)."]
+], "Section A. Poorly attempted: candidates could not link the mass deposited to the charge passed.");
+
+TP(PK12,"GCE",2012,PP13,7,[
+["","Surface tension",3,"Explain the rise of water in a narrow tube dipped vertically in a trough of water.",
+ "WAEC expected answer: the rise is due to capillarity (1). The force of attraction (adhesion) between the water molecules and the molecules of the glass tube is greater than the cohesion among the water molecules (1), so the water clings to (wets) the wall of the tube and is pulled up, causing the rise (1). Explain — do not just define capillarity."]
+], "Section A. Poorly attempted; most candidates defined capillarity instead of explaining.");
+
+TP(PK12,"GCE",2012,PP13,8,[
+["(a)","Electrons and cathode rays",2,"List two properties of cathode rays.",
+ "Any two (1 each): travel in straight lines; are negatively charged; are deflected by electric and magnetic fields; cause fluorescence; carry energy and momentum; produce X-rays when stopped by a hard metal target; ionise gases; affect photographic plates."],
+["(b)","Electrons and cathode rays",2,"State how the intensity and energy of cathode rays may be increased.",
+ "Intensity (number of electrons): increase the cathode/filament temperature, i.e. the heating current (1). Energy (speed of electrons): increase the accelerating p.d. between cathode and anode (1)."]
+], "Section A. Most candidates could not state how to increase intensity and energy.");
+
+TP(PK12,"GCE",2012,PP13,9,[
+["(a)","Kinetic theory",2,"Define diffusion.",
+ "WAEC expected answer: diffusion is the process by which substances mix (intimately) with one another (1) as a result of the random motion of their molecules (1). The 'high to low concentration' definition was NOT accepted, and diffusion must not be confused with osmosis."],
+["(b)","Electrons and cathode rays",2,"State two applications of electrical conduction through gases.",
+ "Any two (1 each): fluorescent tubes; neon signs; sodium / mercury vapour street lamps; spark plugs; cathode ray tubes; X-ray tubes; Geiger–Müller tube; arc welding / arc lamps."]
+], "Section A.");
+
+TP(PK12,"GCE",2012,PP13,10,[
+["(a)","Wave–particle duality",2,"State Heisenberg's uncertainty principle.",
+ "It is impossible to determine simultaneously (1) and with absolute accuracy both the position and the momentum of a particle (1); Δx × Δp ≥ h/4π (≈ h). The key word 'simultaneously' must be included."],
+["(b)","Light and colour",1,"State one phenomenon that can only be explained in terms of the wave nature of light.",
+ "Any one (1): interference; diffraction; polarization."]
+], "Section A. Generally well attempted.");
 
 /* ------------------------------------------------------------------ state */
 let LS_KEY = "examready.v1", LS_CHAT = "examready.chat.v1";
