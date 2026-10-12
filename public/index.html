@@ -1883,6 +1883,127 @@ TB("WASSCE 2020 Biology Paper 2","WASSCE",2020,BW,6,[
  "(f)(i) Water softens the seed coat, activates enzymes, dissolves stored food for transport, and makes cells turgid for growth (2). (ii) Only a living embryo with stored food can grow; a dead seed cannot germinate (2). (g) Light provides the energy for photosynthesis (splitting water / making ATP) (2); when light is low, the rate of photosynthesis is limited however much CO₂ and water are present, so food production depends on it (2)."]
 ],"Section B (Ghana only) is not included.");
 
+// ---- Physics theory (essay) — WAEC GCE (private candidates) Paper 2: 2018 2nd series Q4–12, 2017 Q1–4.
+// From screenshots of waeconline.org.ng e-learning. Marks are estimated (not shown on screen).
+// Where WAEC's expected answer was visible it is quoted; the rest of the marking points are Claude's.
+// Diagrams are described in words. 2018 Q1–3 and 2017 Q5–12 were not supplied. 2018 Q11(c) shows only part (i).
+function TP(pk, ex, yr, paper, qn, parts, note){ parts.forEach(([lab,t,m,q,pts])=>EQ.push({id:`th-phy-${ex}-${yr}-${qn}${lab}`.replace(/\W+/g,"-"), s:"Physics", ex, yr, pk, paper, qn, lab, t, m, q, pts, off:false, note:note||""})); }
+const PP18 = "Paper 2 (essay), private candidates 2nd series", PP17 = "Paper 2 (essay), private candidates";
+const PK18 = "GCE 2018 Physics Paper 2 (2nd series)", PK17 = "GCE 2017 Physics Paper 2";
+
+TP(PK18,"GCE",2018,PP18,4,[
+["(a)","Satellites",2,"State one use of geostationary satellites.",
+ "WAEC expected answer — any one (2): telecommunication (radio, telephone, TV signals); (direct) broadcasting; satellite navigation/GPS support; weather monitoring over one region."],
+["(b)","Satellites",2,"State one use of polar orbit satellites.",
+ "Any one (2): weather forecasting / meteorology; remote sensing / earth observation and mapping; environmental monitoring (e.g. crops, forests, ice); military surveillance / reconnaissance. Polar satellites pass over the whole earth as it rotates beneath them, so they are used for scanning/mapping, not fixed communication links."]
+], "Section A. This question was not popular; few candidates got (a) right.");
+
+TP(PK18,"GCE",2018,PP18,5,[
+["(a)","Circular motion and gravitation",2,"List the forces that keep the earth revolving round the sun.",
+ "Gravitational force (of attraction) between the sun and the earth (1), which provides the centripetal force directed towards the sun (1)."],
+["(b)","Newton's laws",2,"A force F is applied to an object of mass m such that in time t the velocity changes by Δv in the direction of F. Write an equation relating F to m, Δv and t.",
+ "F = mΔv / t (2). (Equivalent: Ft = mΔv.) The question did not require Δv to be split into (v − u); many candidates could not state the formula."]
+], "Section A.");
+
+TP(PK18,"GCE",2018,PP18,6,[
+["(a)","Lasers and modern physics",2,"State two dangers associated with the use of laser.",
+ "WAEC expected answer — any two (1 each): damage to the (human) eye / blindness; fire outbreak; skin burns / tanning. Do NOT accept 'causes cancer' — the examiner noted this showed candidates did not know what a laser is."],
+["(b)","Quantum physics",3,"A laser produces a beam of light of frequency 4.82 × 10¹⁴ Hz. Calculate the energy of a photon in the laser beam. [h = 6.6 × 10⁻³⁴ Js]",
+ "E = hf (1) = 6.6 × 10⁻³⁴ × 4.82 × 10¹⁴ (1) = 3.18 × 10⁻¹⁹ J (1)."]
+], "Section A.");
+
+TP(PK18,"GCE",2018,PP18,7,[
+["","Satellites",4,"An artificial satellite is placed in a geostationary orbit at a height of 9.6 × 10⁶ m above the surface of the earth. Calculate the speed of the satellite in the orbit. (Radius of the earth = 6.4 × 10⁶ m, π = 3.14)",
+ "WAEC expected method: r = R + h = (6.4 + 9.6) × 10⁶ = 1.6 × 10⁷ m (1). A geostationary satellite has period T = 24 h = 86 400 s (1). v = 2πr / T = (2 × 3.14 × 1.6 × 10⁷) / 86 400 (1) = 1.16 × 10³ m/s (≈ 1163 m/s) (1). The key step most candidates missed is knowing T = 24 hours."]
+], "Section A. Performance was below average; very few got full marks.");
+
+TP(PK18,"GCE",2018,PP18,8,[
+["(a)(i)","Mass and weight",2,"State two differences between mass and weight.",
+ "Any two (1 each): mass is the quantity of matter in a body, weight is the gravitational force on it; mass is a scalar, weight is a vector; mass is constant everywhere, weight varies with g (place to place); mass is measured in kg with a beam/chemical balance, weight in newtons with a spring balance."],
+["(a)(ii)","Moments and equilibrium",5,"Diagram (described): a uniform rigid rod 3 m long rests on a pivot placed 0.75 m from its right-hand end. A downward force of 250 N acts at the right-hand end, a downward force F acts at the left-hand end, and the rod's own weight of 50 N acts at its middle. Calculate the: (α) clockwise moment about the pivot; (β) value of F.",
+ "(α) Only the 250 N force is to the right of the pivot: clockwise moment = 250 × 0.75 (1) = 187.5 Nm (1). (β) The pivot is 2.25 m from the left end. The 50 N weight acts at the middle (1.5 m from the left end), i.e. 0.75 m left of the pivot; F acts 2.25 m left of the pivot. Sum of anticlockwise moments = sum of clockwise moments: F × 2.25 + 50 × 0.75 = 187.5 (1); 2.25F = 150 (1); F = 66.7 N (1)."],
+["(b)","Circular motion and gravitation",3,"Diagram (described): an object moves clockwise round a circle with centre T. P is on the left of the circle, Q at the upper right and R at the lower right. Copy the diagram and draw straight lines with arrows to indicate the: (α) net force F at P; (β) acceleration a at P; (γ) velocity v at R.\n(Describe each arrow in words, or attach a photo of your drawing.)",
+ "(α) F at P: arrow along the radius from P towards the centre T (1). (β) a at P: also along PT towards the centre (centripetal acceleration) (1). (γ) v at R: along the tangent at R, perpendicular to the radius TR, pointing in the clockwise direction of motion (i.e. down and to the left at R) (1)."],
+["(c)","Mass and weight",3,"A man weighs 100 N on the surface of the moon. If the acceleration due to gravity on the moon is one-sixth the value on the surface of the earth, calculate the mass of the man on earth. [g = 10 m s⁻²]",
+ "g on moon = 10/6 = 1.67 m s⁻² (1). m = W/g = 100 ÷ (10/6) = 60 kg (1). Mass does not change with location, so his mass on earth is 60 kg (1)."]
+], "Section B.");
+
+TP(PK18,"GCE",2018,PP18,9,[
+["(a)","Heat and latent heat",2,"Define specific latent heat of vaporization.",
+ "The quantity of heat required to change a unit mass (1 kg) of a liquid at its boiling point completely into vapour (1) without a change in temperature (1). Unit J kg⁻¹."],
+["(b)","Heat transfer",2,"Why is the freezing compartment containing the evaporator normally located at the top of a fridge?",
+ "Air cooled by the evaporator becomes denser and sinks (1), while warmer, less dense air rises to the top to be cooled; this sets up convection currents that cool the whole cabinet (1)."],
+["(c)","Kinetic theory",3,"Using the kinetic theory of matter, explain how addition of heat to a substance causes an increase in its temperature.",
+ "Heat supplied is absorbed by the molecules (1) and increases their kinetic energy, so they vibrate/move faster (1). Temperature is a measure of the average kinetic energy of the molecules, so the temperature rises (1)."],
+["(d)","Gas laws",5,"Diagram (described): the same capillary tube of uniform cross-section contains dry air trapped by a 15 cm thread of mercury. When the tube is vertical (open end up, mercury on top) the air column is 20 cm long. When the tube is horizontal the air column is 24 cm long. If Boyle's law is obeyed, calculate the atmospheric pressure.",
+ "Horizontal: P₁ = H, length 24 cm. Vertical, open end up: P₂ = H + 15, length 20 cm (1 each = 2). Boyle's law, P ∝ 1/V and V ∝ length: H × 24 = (H + 15) × 20 (1); 24H − 20H = 300 (1); H = 75 cmHg (1)."],
+["(e)(i)","Work and energy",3,"Red beans of mass 100 g are capable of releasing 240 kcal of energy. In a day, an adult requires 2200 kcal to perform optimally. Calculate the mass of beans required to sustain 500 adults (for a day).",
+ "Energy needed = 500 × 2200 = 1.1 × 10⁶ kcal (1). Mass = (1.1 × 10⁶ ÷ 240) × 100 g (1) = 4.58 × 10⁵ g ≈ 458 kg (1)."],
+["(e)(ii)","Nuclear physics",3,"Calculate the mass of fuel that would be required if a nuclear reactor were to produce the same amount of energy as in (e)(i). [1 kcal = 4184 J; c = 3.0 × 10⁸ m s⁻¹]",
+ "E = 1.1 × 10⁶ × 4184 = 4.60 × 10⁹ J (1). E = mc², so m = E/c² = 4.60 × 10⁹ ÷ (3.0 × 10⁸)² (1) = 5.1 × 10⁻⁸ kg (1)."]
+], "Section B.");
+
+TP(PK18,"GCE",2018,PP18,10,[
+["(a)","Light and colour",3,"List the three secondary colours of light.",
+ "Yellow (1), cyan / peacock blue (1), magenta (1)."],
+["(b)","Optical instruments and the eye",2,"Diagram (described): rays from a nearby object O pass through the lens of a human eye and meet at the image I behind the retina (outside the eyeball). The diagram illustrates a defect of the human eye. (i) State the type of defect. (ii) Name the type of lens to be used in correcting the defect.",
+ "(i) Long sightedness / hypermetropia (1). (ii) Converging (convex) lens (1)."],
+["(c)","Reflection",6,"Diagram (described): an object O is placed between two plane mirrors M₁ (horizontal) and M₂ (vertical) inclined at right angles to each other. (i) Calculate the number of images formed. (ii) Copy the diagram. (iii) On the copied diagram, locate and label all the positions of the images formed by the mirrors.\n(Describe the positions in words, or attach a photo of your drawing.)",
+ "(i) n = 360/θ − 1 = 360/90 − 1 (1) = 3 images (1). (ii) Diagram copied (1). (iii) I₁ behind M₁, as far behind M₁ as O is in front (1); I₂ behind M₂, as far behind M₂ as O is in front (1); I₃ diagonally opposite O, behind the corner where the mirrors meet (image of an image) (1)."],
+["(d)","Reflection",4,"A mirror of focal length 60.0 cm is used to produce a virtual image 3 times larger than the object. Determine the image distance from the mirror.",
+ "A magnified virtual image needs a concave mirror with the object inside F. m = v/u = 3, so v = 3u (numerically) (1). Using 1/f = 1/u + 1/v with the virtual image negative (real-is-positive): 1/60 = 1/u − 1/(3u) = 2/(3u) (1), so u = 40 cm (1) and v = 120 cm (behind the mirror, virtual) (1)."]
+], "Section B.");
+
+TP(PK18,"GCE",2018,PP18,11,[
+["(a)","Electromagnetic induction",2,"State Lenz's law.",
+ "The direction of the induced current (emf) is such that it opposes (1) the change (in magnetic flux) producing it (1)."],
+["(b)","Magnetism",2,"State two applications of magnets.",
+ "Any two (1 each): electric motors; generators/dynamos; loudspeakers / telephone earpieces; electric bells and relays; magnetic compass; magnetic separation of scrap iron / cranes; magnetic storage (hard disks, card strips); MRI scanners."],
+["(c)","Electromagnetic induction",6,"Diagram (described): a step-down transformer with 3000 turns on the primary coil, connected to a 220 V a.c. supply drawing 5 A, giving 110 V at the secondary. (i) State a reason for using: (α) two coils; (β) an iron core; (γ) an alternating supply.",
+ "(α) The primary coil carries the input current and sets up a changing magnetic field; the secondary coil has an emf induced in it by mutual induction, and the ratio of turns sets the output voltage (2). (β) Soft iron has high permeability: it concentrates the magnetic flux and links it from the primary to the secondary, reducing flux leakage and increasing efficiency (2). (γ) Only a changing current produces a changing magnetic flux, which is needed to induce an emf in the secondary; d.c. gives a steady flux and no induced emf (2)."],
+["(d)","Current electricity",5,"Diagram (described): a 500 Ω resistor and a 400 Ω resistor are connected in series across a 6 V battery. A voltmeter is connected across the 500 Ω resistor. If the resistance of the voltmeter is 200 Ω, calculate the voltmeter reading.",
+ "Voltmeter in parallel with 500 Ω: R = (500 × 200)/(500 + 200) = 142.9 Ω (2). Total resistance = 142.9 + 400 = 542.9 Ω (1). I = 6/542.9 = 0.0111 A (1). Reading V = IR = 0.0111 × 142.9 ≈ 1.58 V (1). Common error: ignoring the voltmeter's resistance (that gives 3.33 V)."]
+], "Section B.");
+
+TP(PK18,"GCE",2018,PP18,12,[
+["(a)","Radioactivity",2,"State two sources of background radiation.",
+ "Any two (1 each): cosmic rays from space; radioactive rocks and soil (e.g. granite) / radon gas; building materials; radioactive isotopes in food and the body (e.g. potassium-40, carbon-14); medical X-rays; fallout from nuclear tests/accidents."],
+["(b)","Radioactivity",2,"Why is the count rate of background radiation not constant at a particular place?",
+ "Radioactive decay is random / spontaneous (1), so the number of decays detected per unit time fluctuates from moment to moment (1)."],
+["(c)","Radioactivity",2,"Name two materials that cannot be dated using carbon dating.",
+ "Any two materials that were never living / contain no carbon from living things (1 each): rocks / stones; metals (e.g. iron, gold); glass; minerals such as salt. (Accept: objects older than about 50 000 years, since too little carbon-14 remains.)"],
+["(d)","Radioactivity",2,"Name the types of nuclear radiation that can be used to detect leakage in an underground pipe.",
+ "Gamma rays (1) and beta particles (1). (Gamma is the main answer: it penetrates the soil to reach a detector at the surface.)"],
+["(e)(i)","Photoelectric effect",4,"Two metal surfaces X and Y of work functions 2.90 eV and 4.82 eV respectively are each illuminated by light of wavelength 330 nm. Which of the surfaces will emit photoelectrons? Justify your answer by calculation. [h = 6.6 × 10⁻³⁴ Js; c = 3.0 × 10⁸ m s⁻¹; 1 eV = 1.6 × 10⁻¹⁹ J]",
+ "E = hc/λ = (6.6 × 10⁻³⁴ × 3.0 × 10⁸) / (330 × 10⁻⁹) (1) = 6.0 × 10⁻¹⁹ J = 3.75 eV (1). 3.75 eV > 2.90 eV, so X emits photoelectrons (1); 3.75 eV < 4.82 eV, so Y does not (1)."],
+["(e)(ii)","Photoelectric effect",3,"Calculate the kinetic energy of the photoelectrons.",
+ "KE = hf − W = 3.75 − 2.90 (1) = 0.85 eV (1) = 0.85 × 1.6 × 10⁻¹⁹ = 1.36 × 10⁻¹⁹ J (1)."]
+], "Section B. Parts (a) and (b) were poorly answered.");
+
+TP(PK17,"GCE",2017,PP17,1,[
+["(a)","Projectile motion",1,"A tennis ball travelling with a speed of 10 m s⁻¹ rolls off a horizontal table 1.0 m high. Ignoring air resistance, determine the horizontal speed of the ball just as it strikes the floor. [g = 10 m s⁻²]",
+ "WAEC expected answer: 10 m s⁻¹ (1). No horizontal force acts, so the horizontal velocity stays constant."],
+["(b)","Projectile motion",3,"Determine the time of flight of the ball in air.",
+ "Initial vertical velocity u = 0, so h = ½gt² (1): 1.0 = ½ × 10 × t² → t² = 0.2 (1); t = 0.45 s (1). The examiner noted most candidates failed to see that the initial vertical speed is zero."]
+], "Section A.");
+
+TP(PK17,"GCE",2017,PP17,2,[
+["","Lasers and modern physics",3,"State three uses of lasers.",
+ "Any three (1 each): surgery (e.g. eye surgery, removing tumours); cutting and welding metals; reading CDs/DVDs and barcodes; fibre-optic communication; laser printers; measuring distances / surveying / range finding; holography; military target designation; light shows. Answers must be specific applications; incomplete answers lose marks."]
+], "Section A. Not a popular question.");
+
+TP(PK17,"GCE",2017,PP17,3,[
+["","Magnetism",3,"Name three magnetic elements.",
+ "The elements of the earth's magnetic field (1 each): angle of declination (magnetic variation); angle of dip / inclination; horizontal component of the earth's magnetic field (intensity). If the student lists iron, nickel and cobalt, explain that these are ferromagnetic materials and that in WAEC Physics 'magnetic elements' usually means the elements of the earth's field; give partial credit at most."]
+], "Section A.");
+
+TP(PK17,"GCE",2017,PP17,4,[
+["(a)","Motion",3,"A ball is projected vertically upwards with a velocity of 20 m s⁻¹. Calculate the height attained 4 s after projection. [g = 10 m s⁻²]",
+ "h = ut − ½gt² (1) (note the minus sign: g opposes the motion) = 20 × 4 − ½ × 10 × 4² (1) = 80 − 80 = 0 m (1)."],
+["(b)","Motion",1,"What inference can you draw from your answer?",
+ "After 4 s the ball is back at the point of projection, i.e. its total time of flight is 4 s (1)."]
+], "Section A. Many candidates missed the minus sign in the equation.");
+
 /* ------------------------------------------------------------------ state */
 let LS_KEY = "examready.v1", LS_CHAT = "examready.chat.v1";
 function defaults(){return {name:"", subjects:["English","Mathematics","Physics","Chemistry"], dates:{GCE:"", JAMB:"2027-04-15", WAEC:"2027-06-01"}, targets:{GCE:{}, WAEC:{}, JAMB:250}, paperDates:{GCE:{}, WAEC:{}}, interests:"", xp:0, streak:0, day:null, badges:[], trivia:{right:0,seen:0}, stats:{}, mistakes:[], sessions:[], pref:{exam:"JAMB",subject:"Mathematics",mode:"speed",src:"all"}, updatedAt:0};}
