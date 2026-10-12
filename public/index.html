@@ -1883,13 +1883,30 @@ TB("WASSCE 2020 Biology Paper 2","WASSCE",2020,BW,6,[
  "(f)(i) Water softens the seed coat, activates enzymes, dissolves stored food for transport, and makes cells turgid for growth (2). (ii) Only a living embryo with stored food can grow; a dead seed cannot germinate (2). (g) Light provides the energy for photosynthesis (splitting water / making ATP) (2); when light is low, the rate of photosynthesis is limited however much CO₂ and water are present, so food production depends on it (2)."]
 ],"Section B (Ghana only) is not included.");
 
-// ---- Physics theory (essay) — WAEC GCE (private candidates) Paper 2: 2018 2nd series Q4–12, 2017 Q1–4.
+// ---- Physics theory (essay) — WAEC GCE Paper 2: 2018 2nd series Q1–12, 2017 Q1–4, Nov/Dec 2013 Q9–15.
 // From screenshots of waeconline.org.ng e-learning. Marks are estimated (not shown on screen).
 // Where WAEC's expected answer was visible it is quoted; the rest of the marking points are Claude's.
-// Diagrams are described in words. 2018 Q1–3 and 2017 Q5–12 were not supplied. 2018 Q11(c) shows only part (i).
+// Diagrams are described in words. 2017 Q5–12 and 2013 Q1–8 were not supplied. 2018 Q11(c) shows only part (i).
 function TP(pk, ex, yr, paper, qn, parts, note){ parts.forEach(([lab,t,m,q,pts])=>EQ.push({id:`th-phy-${ex}-${yr}-${qn}${lab}`.replace(/\W+/g,"-"), s:"Physics", ex, yr, pk, paper, qn, lab, t, m, q, pts, off:false, note:note||""})); }
 const PP18 = "Paper 2 (essay), private candidates 2nd series", PP17 = "Paper 2 (essay), private candidates";
 const PK18 = "GCE 2018 Physics Paper 2 (2nd series)", PK17 = "GCE 2017 Physics Paper 2";
+
+TP(PK18,"GCE",2018,PP18,1,[
+["(a)","Elasticity",2,"A graph of tensile stress is plotted against tensile strain. What does the slope of the graph represent?",
+ "WAEC expected answer: Young's modulus (of elasticity) of the material (2)."],
+["(b)","Work and energy",2,"State the energy transformation in shooting a piece of stone using a catapult.",
+ "WAEC expected answer: (elastic) potential energy (1) → kinetic energy (1)."]
+], "Section A. A popular question; most candidates got it right.");
+
+TP(PK18,"GCE",2018,PP18,2,[
+["","Elasticity",4,"An archer pulls a bow by 0.7 m with an arrow of mass 60 g. If the stiffness of the bow is 200 N m⁻¹, calculate the speed of the arrow immediately after its release.",
+ "Elastic energy stored = kinetic energy of arrow: ½ke² = ½mv² (1). m = 60 g = 0.06 kg (1). v = e√(k/m) = 0.7 × √(200/0.06) (1) = 40.4 m/s (1). The examiner noted many candidates forgot to convert 60 g to kg."]
+], "Section A.");
+
+TP(PK18,"GCE",2018,PP18,3,[
+["","Light and optical fibres",3,"State three advantages of optical fibres over (metal) conductors.",
+ "Any three (1 each): carry far more information (greater bandwidth); less signal loss over long distances; not affected by electrical/electromagnetic interference; more secure (hard to tap); no cross-talk between neighbouring fibres; lighter and thinner; no risk of sparks or electric shock; made from cheap, plentiful material (glass/sand)."]
+], "Section A. Popular, but performance was below average.");
 
 TP(PK18,"GCE",2018,PP18,4,[
 ["(a)","Satellites",2,"State one use of geostationary satellites.",
@@ -2003,6 +2020,78 @@ TP(PK17,"GCE",2017,PP17,4,[
 ["(b)","Motion",1,"What inference can you draw from your answer?",
  "After 4 s the ball is back at the point of projection, i.e. its total time of flight is 4 s (1)."]
 ], "Section A. Many candidates missed the minus sign in the equation.");
+
+const PP13 = "Paper 2 (essay), Nov/Dec", PK13 = "GCE 2013 Physics Paper 2 (Nov/Dec)";
+TP(PK13,"GCE",2013,PP13,9,[
+["","Electrons and cathode rays",4,"Electrons from a hot cathode are accelerated from rest to a target in a vacuum tube maintained at a potential difference of 180 V. Calculate the velocity of the electrons on reaching the target. [Mass of an electron = 9.1 × 10⁻³¹ kg; charge of an electron = 1.6 × 10⁻¹⁹ C]",
+ "Energy gained = kinetic energy: eV = ½mv² (1). v = √(2eV/m) = √(2 × 1.6 × 10⁻¹⁹ × 180 ÷ 9.1 × 10⁻³¹) (1) = √(6.33 × 10¹³) (1) = 7.96 × 10⁶ m s⁻¹ (1). The unit must be given — the examiner said units were often wrong or missing."]
+], "Unpopular and poorly handled; almost no candidate could work it out.");
+
+TP(PK13,"GCE",2013,PP13,10,[
+["","Wave–particle duality",3,"Give three observations in support of de Broglie's assumption that moving particles behave like waves.",
+ "WAEC expected answers — any three, naming the particle (1 each): electrons show diffraction (e.g. by a crystal / thin metal film); electrons show interference; electrons show reflection; electrons show refraction; moving electrons have a measurable wavelength/frequency (λ = h/mv), used in the electron microscope; determination of molecular velocities (neutron/molecular beam diffraction)."]
+], "Performance was satisfactory; answers must name the particle showing the wave property.");
+
+TP(PK13,"GCE",2013,PP13,11,[
+["(a)","Motion",3,"List three facts about the acceleration of a free-falling object due to gravity.",
+ "Any three (1 each): it is constant near the earth's surface (about 9.8 m s⁻², taken as 10 m s⁻²); it is the same for all bodies whatever their mass (in the absence of air resistance); it is directed vertically downwards, towards the centre of the earth; it varies slightly from place to place — greater at the poles than at the equator, and decreases with height above the surface."],
+["(b)","Projectile motion",4,"List two objects each which may be considered as projectiles in: (i) sports; (ii) warfare.",
+ "(i) Any two (1 each): kicked football; thrown javelin; shot put; discus; basketball; golf ball; long jumper. (ii) Any two (1 each): bullet fired from a gun; artillery shell / cannon ball; grenade; bomb dropped from a plane; missile (unpowered part of flight); arrow."],
+["(c)(i)","Motion",4,"A ball of mass 120 g was projected vertically upward from the earth's surface with a speed of 25 m s⁻¹. Its height H at regular intervals of time t was: t = 0.5 s, H = 11.25 m; t = 1.0 s, H = 20.00 m; t = 1.5 s, H = 26.25 m; t = 2.0 s, H = 30.00 m; t = 2.5 s, H = 31.25 m. Plot a graph with height H on the vertical axis and time t on the horizontal axis, starting both axes from the origin (0, 0). Draw a smooth curve through the points.\n(Describe your graph, or attach a photo of it.)",
+ "Axes labelled with quantities and units, H/m vertical and t/s horizontal, both from the origin (1); sensible scale using over half the graph paper (1); all five points (and (0, 0)) plotted correctly (1); smooth curve through the points, rising and flattening towards a maximum of 31.25 m at 2.5 s (1)."],
+["(c)(ii)","Motion",2,"Using the graph, determine the height of the ball at t = 1.7 s.",
+ "Read from the graph: about 28 m (accept 27.5–28.5 m) (2). Check by calculation: H = 25 × 1.7 − ½ × 10 × 1.7² = 42.5 − 14.45 = 28.05 m."],
+["(d)","Newton's laws",3,"The combined mass of a bicycle and its rider is 60 kg. Calculate the magnitude of the forward force produced by the bicycle if its speed increases from 10 m s⁻¹ to 15 m s⁻¹ in 3.0 s. [Neglect friction and air resistance]",
+ "a = (v − u)/t = (15 − 10)/3.0 = 1.67 m s⁻² (1). F = ma = 60 × 1.67 (1) = 100 N (1). (Or F = m(v − u)/t = 60 × 5 ÷ 3 = 100 N.)"]
+], "Section B.");
+
+TP(PK13,"GCE",2013,PP13,12,[
+["(a)","Heat and expansion",3,"List three effects of heat on matter.",
+ "Any three (1 each): rise in temperature; expansion (change in size/volume); change of state (melting, boiling); change in electrical resistance; increase in gas pressure; thermionic emission; chemical change (e.g. decomposition); change in colour."],
+["(b)(i)","Heat and expansion",3,"Explain the following observation: a thick glass cup cracks when boiling water is poured into it, but the same cup would not crack when immersed in a bath of cold water which is then heated to boiling point.",
+ "Glass is a poor conductor of heat (1). Boiling water heats the inner surface quickly so it expands, while the outer surface stays cool and does not expand; the unequal expansion sets up strain that cracks the glass (1). When heated slowly from cold, the inner and outer surfaces warm at the same rate and expand equally, so there is no strain (1)."],
+["(b)(ii)","Friction",2,"Explain the following observation: a cat runs with difficulty on a highly polished floor.",
+ "To run, the cat pushes backwards on the floor and the floor's frictional reaction pushes it forward (1). A highly polished floor gives very little friction, so its paws slip and it cannot get enough grip/forward force (1)."],
+["(c)(i)","Gas laws",2,"State the pressure law.",
+ "The pressure of a fixed mass of gas is directly proportional to its absolute (kelvin) temperature (1) provided the volume is kept constant (1)."],
+["(c)(ii)","Gas laws",4,"A bottle is corked when the air in it is at 20 °C and 76 cmHg. The bottle is heated until the pressure is increased by 69 mmHg. Calculate the final temperature of the air in °C.",
+ "P₁ = 76 cmHg = 760 mmHg; T₁ = 20 + 273 = 293 K (1). P₂ = 760 + 69 = 829 mmHg (1). P₁/T₁ = P₂/T₂ → T₂ = 293 × 829 ÷ 760 = 319.6 K (1) = 46.6 °C (1). Common errors: not converting °C to K, or mixing cm and mm of mercury."]
+], "Section B. Part (b)(i) was poorly answered — set out the explanation step by step.");
+
+TP(PK13,"GCE",2013,PP13,13,[
+["(a)(i)","Refraction and lenses",4,"A thin converging lens of focal length f has an object O on and perpendicular to its principal axis. A real image I is produced. Diagram (described): the object is a distance a beyond the principal focus F on one side of the lens, and the image is a distance b beyond the principal focus F on the other side. Given that the principal foci of the lens are the points marked F, use the lens formula to show that f² = ab.",
+ "WAEC expected method: from the diagram, u = a + f and v = b + f (1). Lens formula 1/u + 1/v = 1/f: 1/(a + f) + 1/(b + f) = 1/f (1). Multiply out: f(b + f) + f(a + f) = (a + f)(b + f) → fb + f² + fa + f² = ab + af + bf + f² (1). Hence f² = ab (1)."],
+["(a)(ii)","Refraction and lenses",2,"If a = 16 cm and b = 25 cm, determine f.",
+ "f² = ab = 16 × 25 = 400 (1); f = 20 cm (1)."],
+["(a)(iii)","Refraction and lenses",2,"Calculate the magnification of the image.",
+ "m = v/u = (b + f)/(a + f) = 45/36 (1) = 1.25 (1). (Also m = f/a = b/f = 1.25.)"],
+["(b)","Refraction and lenses",6,"Explain the following terms: (i) principal focus; (ii) optical centre; (iii) focal length.",
+ "(i) The point on the principal axis to which rays parallel and close to the axis converge after refraction through a converging lens (or from which they appear to diverge for a diverging lens) (2). (ii) The point at the centre of the lens, on the principal axis, through which a ray passes without deviation (2). (iii) The distance between the optical centre and the principal focus (2)."]
+], "Section B. Very few candidates attempted it and most missed (a)(i).");
+
+TP(PK13,"GCE",2013,PP13,14,[
+["(a)(i)","Electrostatics",2,"What is a lightning conductor?",
+ "A thick copper strip running down the side of a tall building, with sharp metal spikes at the top (1) and its lower end connected to a metal plate buried in the earth (1)."],
+["(a)(ii)","Electrostatics",3,"Why are lightning conductors used to protect tall buildings from the undesirable effect of thunderstorms?",
+ "By point action, the sharp spikes leak charge into the air: the ions formed neutralise much of the charge on the cloud overhead, reducing the chance of a strike (1). If lightning does strike, the conductor offers a low-resistance path (1) that carries the charge safely to earth instead of through the building, preventing damage or fire (1)."],
+["(b)","Electric fields",6,"Draw the lines of force associated with the following situations: (i) two unlike point charges of equal magnitude; (ii) a positive charge in isolation; (iii) two parallel plates carrying unlike charges of equal magnitude.\n(Describe each pattern in words, or attach a photo of your drawing.)",
+ "(i) Lines leave the positive charge and curve round to end on the negative charge, symmetrical about the line joining them, most crowded in the region between the charges; arrows from + to − (2). (ii) Straight lines radiating outwards in all directions from the charge, with arrows pointing away (2). (iii) Straight, parallel, equally spaced lines from the positive plate to the negative plate (uniform field), slightly curved at the edges; arrows from + to − (2). Lines must never cross."],
+["(c)","Electrostatics",4,"Two equal point charges exert a force F on each other when they are 5.0 × 10⁻² m apart in a vacuum. Determine the distance between the charges if the force is to be doubled.",
+ "Coulomb's law: F ∝ 1/r² (1), so F₁r₁² = F₂r₂² → F × (5.0 × 10⁻²)² = 2F × r₂² (1). r₂ = 5.0 × 10⁻² ÷ √2 (1) = 3.5 × 10⁻² m (1)."]
+], "Section B. Not popular; attempted by few candidates.");
+
+TP(PK13,"GCE",2013,PP13,15,[
+["(a)","Nuclear physics",3,"Explain why it is possible for a slow-moving neutron to penetrate a nucleus while an alpha particle needs a larger amount of energy to penetrate the same nucleus.",
+ "The neutron is uncharged, so it feels no electrostatic repulsion from the positively charged nucleus and can enter even when slow (1). The alpha particle is positively charged and is repelled by the positive nucleus as it approaches (1), so it needs a large kinetic energy to overcome this repulsion (Coulomb barrier) (1)."],
+["(b)","Electrons and cathode rays",4,"List four properties of cathode rays.",
+ "Any four (1 each): travel in straight lines (cast sharp shadows); are negatively charged; are deflected by electric and magnetic fields; cause fluorescence in some substances; carry energy and momentum (can turn a paddle wheel, heat a target); produce X-rays when they strike a hard metal target; ionise gases; affect a photographic plate; can penetrate thin metal foil."],
+["(c)","Photoelectric effect",4,"In a photoelectric emission, a faint blue light of wavelength 5.0 × 10⁻⁷ m and a bright red light of wavelength 7.0 × 10⁻⁷ m are incident on a metal plate. Which of the radiations will release: (i) a greater number of electrons; (ii) electrons of higher maximum kinetic energy? Give reasons for your answers.",
+ "(i) The bright red light (1): the number of electrons emitted per second depends on the intensity (brightness) of the light (1). (ii) The blue light (1): it has the shorter wavelength, so higher frequency and more energetic photons, and the maximum kinetic energy (hf − W) depends on frequency, not intensity (1). Reasons are required — many candidates lost marks by omitting them."],
+["(d)(i)","Photoelectric effect",3,"Caesium metal of work function 2.0 eV is illuminated with radiation of wavelength 5.0 × 10⁻⁷ m. Calculate the threshold wavelength of the metal. [h = 6.6 × 10⁻³⁴ Js; 1 eV = 1.6 × 10⁻¹⁹ J; c = 3.0 × 10⁸ m s⁻¹]",
+ "W = 2.0 × 1.6 × 10⁻¹⁹ = 3.2 × 10⁻¹⁹ J (1). λ₀ = hc/W = (6.6 × 10⁻³⁴ × 3.0 × 10⁸) ÷ 3.2 × 10⁻¹⁹ (1) = 6.2 × 10⁻⁷ m (1)."],
+["(d)(ii)","Photoelectric effect",3,"Calculate the maximum energy of the liberated electrons.",
+ "Photon energy E = hc/λ = 1.98 × 10⁻²⁵ ÷ 5.0 × 10⁻⁷ = 3.96 × 10⁻¹⁹ J (1). KEmax = E − W = 3.96 × 10⁻¹⁹ − 3.2 × 10⁻¹⁹ (1) = 7.6 × 10⁻²⁰ J (≈ 0.48 eV) (1)."]
+], "Section B. Part (a) was rarely attempted.");
 
 /* ------------------------------------------------------------------ state */
 let LS_KEY = "examready.v1", LS_CHAT = "examready.chat.v1";
