@@ -4211,10 +4211,11 @@ function renderT(){
     const pc = pct(res.score,it.m), cls = pc>=75?"ok":pc>=50?"warn":"bad", slow = used>target;
     body = `<div class="card stack"><div class="spread"><div class="score"><div class="big num">${res.score}/${it.m}</div><span class="pill ${cls}">${res.self?"Self-marked":esc(res.verdict||"")}</span></div><span class="pill ${slow?"warn":"ok"} num">${fmtTime(used)} · target ${fmtTime(target)}</span></div>
       ${res.got&&res.got.length?`<div class="stack" style="gap:4px"><span class="label">Marks earned</span>${res.got.map(g=>`<p>✓ ${esc(g)}</p>`).join("")}</div>`:""}
-      ${res.missed&&res.missed.length?`<div class="stack" style="gap:4px"><span class="label">Marks missed</span>${res.missed.map(g=>`<p>✗ ${esc(g)}</p>`).join("")}</div>`:""}
+      ${res.missed&&res.missed.length?`<div class="stack" style="gap:4px"><span class="label">Marks missed${res.appeal&&res.appeal.to>res.appeal.from?" (first marking — see the challenge result below)":""}</span>${res.missed.map(g=>`<p>✗ ${esc(g)}</p>`).join("")}</div>`:""}
       ${res.tip?`<div class="explain"><b>Exam tip.</b> ${esc(res.tip)}</div>`:""}
       <details ${res.self?"open":""}><summary><b>${it.off?"Official WAEC expected answer":"Full-mark answer"}</b></summary><p style="white-space:pre-wrap;margin-top:8px">${esc(res.model||it.pts)}</p></details>
       ${slow?`<p class="note">You took longer than the ${fmtTime(target)} this part is worth in the exam. In the real paper, write your points briefly and move on.</p>`:""}
+      ${!res.self?(res.appeal?`<p class="note"><b>Challenge:</b> ${esc(res.appeal.result)}</p>`:`<details class="appeal"><summary class="note">Think you were marked wrong? Challenge this mark</summary><div class="stack" style="margin-top:8px"><textarea id="tappeal" rows="3" placeholder="Explain why your answer is correct, e.g. 'my point (ii) means the same as …'" ${r.busy?"disabled":""}></textarea><div class="row"><button class="btn sm" data-t="appeal" ${r.busy||!aiReady()?"disabled":""}>${r.busy?"Re-marking…":"Ask a second examiner"}</button></div><p class="note">A second examiner re-marks your answer with your explanation. You can challenge each answer once.</p></div></details>`):""}
       ${res.self?`<div class="row"><label class="label" for="tself">Your mark out of ${it.m}</label><input id="tself" type="number" min="0" max="${it.m}" step="0.5" value="${res.score}" style="width:6em" class="num"><button class="btn sm" data-t="selfsave">Save mark</button></div>`:""}
     </div>
     <div class="row"><button class="btn" data-t="next">${r.i===r.items.length-1?"See results":"Next part"}</button></div>`;
@@ -4232,6 +4233,7 @@ $("theory").addEventListener("click", async e=>{
   const b=e.target.closest("[data-t]"); if(!b || !trun) return;
   const r=trun, it=r.items[r.i], a=b.dataset.t;
   if(a==="submit") return markT();
+  if(a==="appeal") return appealT();
   if(a==="stop"){ r.ctl&&r.ctl.abort(); return; }
   if(a==="skip"){ tBank(); if(r.i<r.items.length-1){ r.i++; r.shown=performance.now(); renderT(); window.scrollTo(0,0);} else finishT(); return; }
   if(a==="end") return finishT();
@@ -4239,6 +4241,38 @@ $("theory").addEventListener("click", async e=>{
   if(a==="selfsave"){ const v=Math.max(0,Math.min(it.m,Number($("tself").value)||0)); const res=r.res[r.i]; if(res.counted) recordTheory(it, v, r.ms[r.i], res.score); else { recordTheory(it, v, r.ms[r.i]); res.counted=true; } res.score=v; toast("Mark saved"); return renderT(); }
   if(a==="ask"){ const res=r.res[r.i]; sendChat(`Help me with this WAEC ${it.s} theory question (${it.ex} ${it.yr}, Q${it.qn}${it.lab}, ${it.m} marks):\n${it.q}\n\nMy answer:\n${r.ans[r.i]||"(blank)"}\n\nI scored ${res.score}/${it.m}. Marking points: ${it.pts}\n\nExplain what the examiner wanted, how to set out a full-mark answer quickly, and give me a similar question to practise.`); }
 });
+async function appealT(){
+  const r=trun, it=r.items[r.i], res=r.res[r.i]; if(!res || res.appeal || r.busy) return;
+  const why = (($("tappeal")||{}).value||"").trim(); if(!why) return toast("Write why you think your answer is right");
+  r.busy=true; r.ctl=new AbortController(); renderT();
+  const prompt = `You are a second, independent WAEC chief examiner reviewing a disputed mark on a Nigerian SS3 candidate's ${it.ex} ${it.s} theory answer (${it.yr}, Question ${it.qn}${it.lab}). Be fair and scientifically rigorous: the candidate deserves every mark a WAEC examiner would award, but no marks for wrong physics or chemistry.
+The marking points are a guide; any correct, relevant alternative earns the mark. Judge the CANDIDATE'S ANSWER on its own merits, using the candidate's explanation only to understand what they meant — do not award marks for content that is only in the explanation and not in the answer.
+
+QUESTION (${it.m} marks):
+${it.q}
+
+MARKING POINTS (guide):
+${it.pts}
+
+CANDIDATE'S ANSWER:
+${r.ans[r.i]||"(blank)"}
+
+FIRST EXAMINER: ${res.score}/${it.m}. Points marked wrong or missing: ${(res.missed||[]).join("; ")||"none listed"}
+
+CANDIDATE'S CHALLENGE:
+${why}
+
+Reply with only JSON: {"score": number from 0 to ${it.m} (your fair mark), "upheld": true if the candidate was right to challenge, "reason": "2–3 sentences addressed to the candidate explaining your decision, with the correct physics/chemistry where they were wrong"}`;
+  try{
+    const out = await sample.json(prompt, {cache:false, signal:r.ctl.signal});
+    let sc = Number(out && out.score); if(!isFinite(sc)) throw {code:"invalid_json"};
+    sc = Math.max(res.score, Math.min(it.m, Math.round(sc*2)/2));
+    const before = res.score;
+    res.appeal = {from:before, to:sc, why, result: sc>before ? `Mark raised from ${before} to ${sc}/${it.m}. ${String(out.reason||"")}` : `Mark stays at ${before}/${it.m}. ${String(out.reason||"")}`};
+    if(sc>before){ res.score=sc; res.verdict="Raised on challenge"; recordTheory(it, sc, 0, before); }
+  }catch(e){ handleAiErr(e); if(e && e.code!=="cancelled") toast(aiErr(e)); }
+  r.busy=false; r.ctl=null; renderT();
+}
 async function markT(){
   const r=trun, it=r.items[r.i], ans=(r.ans[r.i]||"").trim(), photo=r.photo[r.i];
   tBank();
@@ -4249,7 +4283,8 @@ async function markT(){
   if(!ans && !photo) return toast("Write your answer first, or add a photo of it");
   r.busy=true; r.ctl=new AbortController(); renderT();
   const prompt = `You are a WAEC chief examiner marking a Nigerian SS3 candidate's answer to a ${it.ex} ${it.s} theory question (${it.yr}, ${it.paper}, Question ${it.qn}${it.lab}).
-Mark the way WAEC does: award marks for each correct, relevant point up to the maximum; accept equivalent wording, IUPAC or traditional names, and any correct alternative example; give no credit for vague or contradictory statements; for calculations give method marks for correct working even if the final answer is wrong, and require units where the scheme does; ignore spelling unless it changes the chemistry. Half marks are allowed. If the candidate gives more items than asked (e.g. three examples when two are asked), mark only the first ones given.
+Mark the way WAEC does: award marks for each correct, relevant point up to the maximum; accept equivalent wording, traditional or IUPAC names, and any correct alternative example; give no credit for vague or contradictory statements; for calculations give method marks for correct working even if the final answer is wrong, accept answers within normal rounding, and require units where the scheme does; ignore spelling unless it changes the meaning. Half marks are allowed.
+The marking points below are a GUIDE, not the only acceptable answers. If the candidate gives a different point that is scientifically correct and answers the question, award the mark. Never mark a correct statement as wrong just because it is not in the guide; only list something under "missed" if the candidate's point is actually wrong, irrelevant, or absent. If the candidate gives more items than asked (e.g. three examples when two are asked), mark only the first ones given.
 ${photo?"A photo of the candidate's written working or diagram is attached; mark it together with the typed answer. ":"If a diagram is asked for and the candidate describes it in words, award marks for every feature correctly described. "}
 
 QUESTION (${it.m} marks):
